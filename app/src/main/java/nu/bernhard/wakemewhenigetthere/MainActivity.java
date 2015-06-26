@@ -2,17 +2,31 @@ package nu.bernhard.wakemewhenigetthere;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = MainActivity.class.getName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        String alarmJson = "{name: \"Test Alarm\", lon: 15.566608, lat: 58.412103, radius: 250, active: true}";
+        String alarmJson2 = "{name: \"Test Alarm22\", lon: 15.566608, lat: 58.412103, radius: 500, active: true}";
+        String alarmJson3 = "{name: \"Test Alarm333\", lon: 15.566608, lat: 58.412103, radius: 1250, active: true}";
+        Alarms alarms = new Alarms();
+        Alarm alarm = new Alarm(alarmJson);
+        alarms.add(alarm);
+        alarm = new Alarm(alarmJson2);
+        alarms.add(alarm);
+        alarm = new Alarm(alarmJson3);
+        alarms.add(alarm);
+        String json = alarms.toJSON();
+        Log.d("json", json);
     }
 
     @Override
