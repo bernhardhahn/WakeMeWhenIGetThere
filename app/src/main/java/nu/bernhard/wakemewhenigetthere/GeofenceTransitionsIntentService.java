@@ -1,9 +1,7 @@
 package nu.bernhard.wakemewhenigetthere;
 
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
@@ -45,6 +43,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d(TAG, "GeofenceTransitionsIntentService onHandleIntent");
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()) {
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
@@ -57,26 +56,11 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
-            ArrayList triggeringGeofencesIdsList = new ArrayList();
             for (Geofence geofence : triggeringGeofences) {
-                triggeringGeofencesIdsList.add(geofence.getRequestId());
+                Log.d(TAG, "handle geofence with requestId: " + geofence.getRequestId());
                 AlarmService.enterGeofence(getApplicationContext(), geofence.getRequestId());
             }
-            String triggeringGeofencesIdsString = TextUtils.join(", ", triggeringGeofencesIdsList);
-
-
-            // Send notification and log the transition details.
-            notifyAlarmService(triggeringGeofencesIdsString);
-            Log.i(TAG, triggeringGeofencesIdsString);
         }
-    }
-
-    private void notifyAlarmService(String message) {
-        Context context = getApplicationContext();
-        Intent intent = new Intent(context, AlarmService.class);
-        intent.putExtra("message", message);
-        Log.d("ttt", "GeofenceService will send message to AlarmService");
-        context.startService(intent);
     }
 
 }

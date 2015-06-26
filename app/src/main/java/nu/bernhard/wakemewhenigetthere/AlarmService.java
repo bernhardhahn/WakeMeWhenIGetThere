@@ -57,7 +57,7 @@ public class AlarmService extends NonStoppingIntentService {
     private void handleActionEnterGeofence(String geofenceId) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setContentTitle("AlarmService");
-        builder.setSubText("Enter: " + geofenceId);
+        builder.setContentText("Enter: " + geofenceId);
         builder.setSmallIcon(android.R.drawable.ic_media_play);
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
