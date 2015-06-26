@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 public class AlarmService extends NonStoppingIntentService {
     private static final String ACTION_FOREGROUND =
@@ -24,22 +23,17 @@ public class AlarmService extends NonStoppingIntentService {
 
     public AlarmService() {
         super(TAG);
-        Log.d(TAG, "AlarmService constructor");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int superResult = super.onStartCommand(intent, flags, startId);
-        Log.d(TAG, "AlarmService onStartCommand: superRes: " + superResult);
-        return START_STICKY;
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "AlarmService onHandleIntent");
         if (intent != null) {
             final String action = intent.getAction();
-            Log.d(TAG, "AlarmService onHandleIntent action: " + action);
 
             if (ACTION_FOREGROUND.equals(action)) {
                 final Boolean foreground = intent.getBooleanExtra(EXTRA_FOREGROUND_VALUE, false);
