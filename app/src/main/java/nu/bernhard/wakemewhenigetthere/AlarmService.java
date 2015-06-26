@@ -3,6 +3,7 @@ package nu.bernhard.wakemewhenigetthere;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.util.Log;
 
 public class AlarmService extends IntentService {
     private static final String ACTION_FOO = "nu.bernhard.wakemewhenigetthere.action.FOO";
@@ -30,10 +31,19 @@ public class AlarmService extends IntentService {
 
     public AlarmService() {
         super(TAG);
+        Log.d(TAG, "AlarmService constructor");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        int superResult = super.onStartCommand(intent, flags, startId);
+        Log.d(TAG, "AlarmService onStartCommand: superRes: " + superResult);
+        return START_STICKY;
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d(TAG, "AlarmService onHandleIntent");
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_FOO.equals(action)) {
