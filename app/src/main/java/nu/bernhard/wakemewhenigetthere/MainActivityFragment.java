@@ -24,7 +24,7 @@ public class MainActivityFragment extends Fragment {
     private Button stopServiceForegroundButton;
     private ListView alarmsListView;
 
-    private List<Alarm> alarms = new ArrayList<>();
+    private Alarms alarms;
 
     public MainActivityFragment() {
     }
@@ -73,6 +73,7 @@ public class MainActivityFragment extends Fragment {
         String alarmJson2 = "{name: \"Test Alarm22\", lon: 15.566608, lat: 58.412103, radius: 500, active: true}";
         String alarmJson3 = "{name: \"Test Alarm333\", lon: 15.566608, lat: 58.412103, radius: 1250, active: true}";
 
+        alarms = new Alarms();
         Alarm alarm = new Alarm(alarmJson);
         alarms.add(alarm);
         alarm = new Alarm(alarmJson2);

@@ -7,23 +7,21 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.List;
-
 /**
  * Created by Bernhard on 2015-06-27.
  */
 public class AlarmsAdapter extends BaseAdapter {
     private Context context;
-    private List<Alarm> alarms;
+    private Alarms alarms;
 
-    public AlarmsAdapter(Context context, List<Alarm> alarms) {
+    public AlarmsAdapter(Context context, Alarms alarms) {
         this.context = context;
         this.alarms = alarms;
     }
 
     @Override
     public int getCount() {
-        return alarms.size();
+        return alarms.getSize();
     }
 
     @Override

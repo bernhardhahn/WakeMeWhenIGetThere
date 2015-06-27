@@ -14,6 +14,14 @@ public class Alarms {
         return alarms.get(index);
     }
 
+    public List<Alarm> getAll() {
+        return alarms;
+    }
+
+    public int getSize() {
+        return alarms.size();
+    }
+
     public String toJSON() {
         StringBuilder sb = new StringBuilder();
         sb.append('[');
