@@ -1,13 +1,13 @@
 package nu.bernhard.wakemewhenigetthere;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
+import android.os.Binder;
+import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
 public class AlarmService extends NonStoppingIntentService {
     private static final String ACTION_FOREGROUND =
@@ -20,6 +20,7 @@ public class AlarmService extends NonStoppingIntentService {
     private static final String EXTRA_GEOFENCE_ID =
             "nu.bernhard.wakemewhenigetthere.extra.GEOFENCE_ID";
     private static final String TAG = "AlarmService";
+    private IBinder binder  = new AlarmServiceBinder();;
 
     public static void setForeground(Context context, boolean foreground) {
         Intent intent = new Intent(context, AlarmService.class);
@@ -37,6 +38,17 @@ public class AlarmService extends NonStoppingIntentService {
 
     public AlarmService() {
         super(TAG);
+    }
+
+    public class AlarmServiceBinder extends Binder {
+        AlarmService getService() {
+            return AlarmService.this;
+        }
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
     }
 
     @Override

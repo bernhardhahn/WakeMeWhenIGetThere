@@ -1,15 +1,17 @@
 package nu.bernhard.wakemewhenigetthere;
 
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -50,18 +52,43 @@ public class MainActivityFragment extends Fragment implements
     private EditText newAlarmLonInput;
     private AlarmsAdapter alarmsAdapter;
 
+    private AlarmService alarmService;
+    private boolean serviceBound;
+    private ServiceConnection alarmServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to AlarmService, cast the IBinder and get AlarmService instance
+            AlarmService.AlarmServiceBinder binder = (AlarmService.AlarmServiceBinder) service;
+            alarmService = binder.getService();
+            serviceBound = true;
+            Log.d(TAG, "onServiceConnected: " + className.toString());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName className) {
+            serviceBound = false;
+            Log.d(TAG, "onServiceConnected: " + className.toString());
+
+        }
+    };
+
     public MainActivityFragment() {
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Intent intent = new Intent(getActivity(), AlarmService.class);
+        getActivity().bindService(intent, alarmServiceConnection, Context.BIND_ADJUST_WITH_ACTIVITY);
         googleApiClient.connect();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        getActivity().unbindService(alarmServiceConnection);
         googleApiClient.disconnect();
     }
 
