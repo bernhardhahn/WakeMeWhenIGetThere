@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        />
+        tools:text="Test alarm 1" />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -18,17 +18,20 @@
             android:id="@+id/alarm_list_item_coords"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"/>
+            android:layout_weight="0.3"
+            tools:text="58.566608, 58.412103"/>
         <TextView
             android:id="@+id/alarm_list_item_radius"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"/>
+            android:layout_weight="0.3"
+            tools:text="Radius 1200 m"/>
         <TextView
             android:id="@+id/alarm_list_item_active"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"/>
+            android:layout_weight="0.3"
+            tools:text="active"/>
 
     </LinearLayout>
 </LinearLayout>
