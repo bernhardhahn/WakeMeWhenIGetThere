@@ -100,7 +100,7 @@
         android:id="@+id/addAlarmButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Service"/>
+        android:text="@string/add_alarm"/>
 
     <ListView
         android:id="@+id/alarmsListView"
