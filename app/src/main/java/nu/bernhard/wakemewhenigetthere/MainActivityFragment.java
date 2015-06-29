@@ -21,8 +21,6 @@ public class MainActivityFragment extends Fragment {
     private static final String TAG = MainActivityFragment.class.getName();
 
     private Button addAlarmButton;
-    private Button startServiceForegroundButton;
-    private Button stopServiceForegroundButton;
     private ListView alarmsListView;
 
     private EditText newAlarmRadiusInput;
@@ -86,15 +84,12 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         addAlarmButton = (Button) view.findViewById(R.id.addAlarmButton);
-        startServiceForegroundButton = (Button) view.findViewById(R.id.startServiceForegroundButton);
-        stopServiceForegroundButton = (Button) view.findViewById(R.id.stopServiceForegroundButton);
         alarmsListView = (ListView) view.findViewById(R.id.alarmsListView);
 
         newAlarmNameInput = (EditText) view.findViewById(R.id.newAlarmName);
         newAlarmLatInput = (EditText) view.findViewById(R.id.newAlarmLat);
         newAlarmLonInput = (EditText) view.findViewById(R.id.newAlarmLon);
         newAlarmRadiusInput = (EditText) view.findViewById(R.id.newAlarmRadius);
-
 
         addAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,27 +109,7 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-        startServiceForegroundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlarmService.setForeground(getActivity().getApplicationContext(), true);
-            }
-        });
-
-        stopServiceForegroundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlarmService.setForeground(getActivity().getApplicationContext(), false);
-            }
-        });
-
-
-
-
-
         return view;
     }
-
-
 
 }
