@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Alarms {
-    List<Alarm> alarms = new ArrayList<>();
+    private List<Alarm> alarms = new ArrayList<>();
     private Integer nextId = 1;
     private List<AlarmsUpdateListener> listeners = new ArrayList<>();
 
