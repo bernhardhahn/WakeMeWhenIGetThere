@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 public class Alarm  {
 
+    private Integer id = -1;
     private String name;
     private Double lon;
     private Double lat;
@@ -14,6 +15,11 @@ public class Alarm  {
     private Boolean active;
 
     public Alarm() { }
+
+    public Alarm(Integer id, String name, Double lon, Double lat, Integer radius, Boolean active) {
+        this(name, lon, lat, radius, active);
+        this.id = id;
+    }
 
     public Alarm(String name, Double lon, Double lat, Integer radius, Boolean active) {
         this.setName(name);
@@ -26,6 +32,7 @@ public class Alarm  {
     public Alarm(String jsonString) {
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
+            setId(jsonObject.getInt("id"));
             setName(jsonObject.getString("name"));
             setLon(jsonObject.getDouble("lon"));
             setLat(jsonObject.getDouble("lat"));
@@ -39,6 +46,7 @@ public class Alarm  {
     public String toJSON()  {
         StringBuilder sb = new StringBuilder();
         sb.append('{');
+        sb.append("lon: " + getId() + ", ");
         sb.append("name: \"" + getName().toString() + "\", ");
         sb.append("lon: " + getLon() + ", ");
         sb.append("lat: " + getLat() + ", ");
@@ -87,5 +95,13 @@ public class Alarm  {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
