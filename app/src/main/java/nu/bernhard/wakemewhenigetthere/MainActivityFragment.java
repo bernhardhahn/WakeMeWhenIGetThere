@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,13 +37,18 @@ public class MainActivityFragment extends Fragment implements
 
     private static final String TAG = MainActivityFragment.class.getName();
 
-    private Button startServiceButton;
+    private Button addAlarmButton;
     private Button startServiceForegroundButton;
     private Button stopServiceForegroundButton;
     private ListView alarmsListView;
 
     private Alarms alarms;
     private GoogleApiClient googleApiClient;
+    private EditText newAlarmRadiusInput;
+    private EditText newAlarmNameInput;
+    private EditText newAlarmLatInput;
+    private EditText newAlarmLonInput;
+    private AlarmsAdapter alarmsAdapter;
 
     public MainActivityFragment() {
     }
@@ -62,18 +69,30 @@ public class MainActivityFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        startServiceButton = (Button) view.findViewById(R.id.startServiceButton);
+        addAlarmButton = (Button) view.findViewById(R.id.addAlarmButton);
         startServiceForegroundButton = (Button) view.findViewById(R.id.startServiceForegroundButton);
         stopServiceForegroundButton = (Button) view.findViewById(R.id.stopServiceForegroundButton);
         alarmsListView = (ListView) view.findViewById(R.id.alarmsListView);
 
+        newAlarmNameInput = (EditText) view.findViewById(R.id.newAlarmName);
+        newAlarmLatInput = (EditText) view.findViewById(R.id.newAlarmLat);
+        newAlarmLonInput = (EditText) view.findViewById(R.id.newAlarmLon);
+        newAlarmRadiusInput = (EditText) view.findViewById(R.id.newAlarmRadius);
 
-        startServiceButton.setOnClickListener(new View.OnClickListener() {
+
+        addAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Context context = getActivity().getApplicationContext();
-                Intent alarmServiceIntent = new Intent(context, AlarmService.class);
-                context.startService(alarmServiceIntent);
+                String alarmName = newAlarmNameInput.getText().toString();
+                Double lat = Double.parseDouble(newAlarmLatInput.getText().toString());
+                Double lon = Double.parseDouble(newAlarmLonInput.getText().toString());
+                Integer radius = Integer.parseInt((newAlarmRadiusInput.getText().toString()));
+
+                Alarm alarm = new Alarm(alarmName, lon, lat, radius, true);
+                alarms.add(alarm);
+                alarmsAdapter.notifyDataSetChanged();
+                addGeofences();
+
             }
         });
 
@@ -98,7 +117,8 @@ public class MainActivityFragment extends Fragment implements
                 .build();
 
         initAlarms();
-        alarmsListView.setAdapter(new AlarmsAdapter(getActivity().getApplicationContext(), alarms));
+        alarmsAdapter = new AlarmsAdapter(getActivity().getApplicationContext(), alarms);
+        alarmsListView.setAdapter(alarmsAdapter);
 
         return view;
     }
