@@ -71,6 +71,10 @@ public class AlarmService extends NonStoppingIntentService implements
         return alarms;
     }
 
+    public void updateAlarms() {
+        updateGeofences();
+    }
+
     public class AlarmServiceBinder extends Binder {
         AlarmService getService() {
             return AlarmService.this;

@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.DataSetObserver;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -51,8 +52,22 @@ public class MainActivityFragment extends Fragment {
 
     private void getAlarmsFromService() {
         if ( serviceBound ) {
-            Alarms alarms = alarmService.getAlarms();
+            final Alarms alarms = alarmService.getAlarms();
             alarmsAdapter = new AlarmsAdapter(getActivity().getApplicationContext(), alarms);
+            alarmsAdapter.registerDataSetObserver(new DataSetObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    for (int i = 0; i < alarmsAdapter.getCount(); ++i) {
+                        Alarm alarm = (Alarm) alarmsAdapter.getItem(i);
+                        Log.d(TAG, alarm.getName() +  "  > " + alarm.isActive());
+                    }
+                    if (serviceBound) {
+                        alarmService.updateAlarms();
+                    }
+                }
+
+            });
             alarmsListView.setAdapter(alarmsAdapter);
         } else {
             Log.d(TAG, "alarms service not bound: can't create AlarmAdapter");

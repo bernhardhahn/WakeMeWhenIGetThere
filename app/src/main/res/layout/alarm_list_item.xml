@@ -13,7 +13,8 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants">
         <TextView
             android:id="@+id/alarm_list_item_coords"
             android:layout_width="wrap_content"
@@ -26,12 +27,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             tools:text="Radius 1200 m"/>
-        <TextView
+        <ToggleButton
             android:id="@+id/alarm_list_item_active"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            tools:text="active"/>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </LinearLayout>
