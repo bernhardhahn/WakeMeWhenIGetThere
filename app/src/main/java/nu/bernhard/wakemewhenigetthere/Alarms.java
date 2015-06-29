@@ -5,9 +5,21 @@ import java.util.List;
 
 public class Alarms {
     List<Alarm> alarms = new ArrayList<>();
+    private Integer nextId = 1;
 
-    public void add(Alarm alarm) {
+    public Integer add(Alarm alarm) {
+        alarm.setId(nextId++);
         alarms.add(alarm);
+        return alarm.getId();
+    }
+
+    public void update(Alarm alarm) {
+        for (int i = 0; i < alarms.size(); ++i) {
+            if (alarms.get(i).getId() == alarm.getId()) {
+                alarms.set(i, alarm);
+                break;
+            }
+        }
     }
 
     public Alarm get(int index) {
