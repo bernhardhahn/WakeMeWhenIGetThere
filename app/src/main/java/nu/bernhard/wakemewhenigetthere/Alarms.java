@@ -6,6 +6,7 @@ import java.util.List;
 public class Alarms {
     List<Alarm> alarms = new ArrayList<>();
     private Integer nextId = 1;
+    private List<AlarmsUpdateListener> listeners = new ArrayList<>();
 
     public Integer add(Alarm alarm) {
         alarm.setId(nextId++);
@@ -46,5 +47,23 @@ public class Alarms {
         sb.append(']');
 
         return sb.toString();
+    }
+
+    private void triggerUpdateListeners() {
+        for (AlarmsUpdateListener listener : listeners) {
+            listener.onAlarmsUpdate();
+        }
+    }
+
+    public void addAlarmsUpdateListener(AlarmsUpdateListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeAlarmsUpdateListener(AlarmsUpdateListener listener) {
+        listeners.remove(listener);
+    }
+
+    public interface AlarmsUpdateListener {
+        public void onAlarmsUpdate();
     }
 }
