@@ -27,15 +27,11 @@ public class AlarmService extends NonStoppingIntentService implements
         GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<Status> {
 
-    private static final String ACTION_FOREGROUND =
-            "nu.bernhard.wakemewhenigetthere.action.FOREGROUND";
-    private static final String ACTION_ENTER_GEOFENCE =
-            "nu.bernhard.wakemewhenigetthere.action.ENTER_GEOFENCE";
+    private static final String ACTION_FOREGROUND = "nu.bernhard.wakemewhenigetthere.action.FOREGROUND";
+    private static final String ACTION_ENTER_GEOFENCE = "nu.bernhard.wakemewhenigetthere.action.ENTER_GEOFENCE";
 
-    private static final String EXTRA_FOREGROUND_VALUE =
-            "nu.bernhard.wakemewhenigetthere.extra.FOREGROUND_VALUE";
-    private static final String EXTRA_GEOFENCE_ID =
-            "nu.bernhard.wakemewhenigetthere.extra.GEOFENCE_ID";
+    private static final String EXTRA_FOREGROUND_VALUE = "nu.bernhard.wakemewhenigetthere.extra.FOREGROUND_VALUE";
+    private static final String EXTRA_GEOFENCE_ID = "nu.bernhard.wakemewhenigetthere.extra.GEOFENCE_ID";
     private static final String TAG = "AlarmService";
     private IBinder binder  = new AlarmServiceBinder();
     private Alarms alarms = new Alarms();
@@ -71,13 +67,8 @@ public class AlarmService extends NonStoppingIntentService implements
         googleApiClient.connect();
     }
 
-
     public Alarms getAlarms() {
         return alarms;
-    }
-
-    public void setAlarms(Alarms alarms) {
-        this.alarms = alarms;
     }
 
     public class AlarmServiceBinder extends Binder {
@@ -93,11 +84,8 @@ public class AlarmService extends NonStoppingIntentService implements
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "onHandleIntent");
         if (intent != null) {
-            Log.d(TAG, "onHandleIntent: intent: " + intent.toString());
             final String action = intent.getAction();
-
             if (ACTION_FOREGROUND.equals(action)) {
                 final Boolean foreground = intent.getBooleanExtra(EXTRA_FOREGROUND_VALUE, false);
                 handleActionForeground(foreground);
@@ -144,8 +132,6 @@ public class AlarmService extends NonStoppingIntentService implements
         }
     }
 
-
-
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "Connected to GoogleApiClient");
@@ -163,7 +149,6 @@ public class AlarmService extends NonStoppingIntentService implements
     public void onConnectionSuspended(int cause) {
         // The connection to Google Play services was lost for some reason.
         Log.i(TAG, "Connection suspended");
-
         // onConnected() will be called again automatically when the service reconnects
     }
 
@@ -173,7 +158,6 @@ public class AlarmService extends NonStoppingIntentService implements
             Log.d(TAG, "addGeofences: googleApiClient is not connected");
             return;
         }
-
 
         try {
             LocationServices.GeofencingApi.addGeofences(
@@ -225,9 +209,7 @@ public class AlarmService extends NonStoppingIntentService implements
     public void onResult(Status status) {
         if (status.isSuccess()) {
             Log.d(TAG, "Add geofence: Success");
-            Log.d(TAG, "status: " + status.getStatusMessage());
         } else {
-            // Get the status code for the error and log it using a user-friendly message.
             String errorMessage = GeofenceErrorMessages.getErrorString(
                     getApplicationContext(),
                     status.getStatusCode());
