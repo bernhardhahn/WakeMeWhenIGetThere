@@ -98,7 +98,7 @@ public class AlarmService extends NonStoppingIntentService implements
 
     public void addAlarm(Alarm alarm) {
         alarms.add(alarm);
-        addGeofences();
+        updateGeofences();
     }
 
     private void handleActionEnterGeofence(String geofenceId) {
@@ -135,7 +135,7 @@ public class AlarmService extends NonStoppingIntentService implements
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "Connected to GoogleApiClient");
-        addGeofences();
+        updateGeofences();
     }
 
     @Override
@@ -152,7 +152,7 @@ public class AlarmService extends NonStoppingIntentService implements
         // onConnected() will be called again automatically when the service reconnects
     }
 
-    private void addGeofences() {
+    private void updateGeofences() {
         if (!googleApiClient.isConnected()) {
             //TODO: raise error
             Log.d(TAG, "addGeofences: googleApiClient is not connected");
