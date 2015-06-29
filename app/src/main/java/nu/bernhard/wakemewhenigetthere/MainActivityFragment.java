@@ -22,7 +22,6 @@ public class MainActivityFragment extends Fragment {
 
     private Button addAlarmButton;
     private ListView alarmsListView;
-
     private EditText newAlarmRadiusInput;
     private EditText newAlarmNameInput;
     private EditText newAlarmLatInput;
@@ -36,7 +35,6 @@ public class MainActivityFragment extends Fragment {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            // We've bound to AlarmService, cast the IBinder and get AlarmService instance
             AlarmService.AlarmServiceBinder binder = (AlarmService.AlarmServiceBinder) service;
             alarmService = binder.getService();
             serviceBound = true;
@@ -48,7 +46,6 @@ public class MainActivityFragment extends Fragment {
         public void onServiceDisconnected(ComponentName className) {
             serviceBound = false;
             Log.d(TAG, "onServiceConnected: " + className.toString());
-
         }
     };
 
@@ -58,12 +55,8 @@ public class MainActivityFragment extends Fragment {
             alarmsAdapter = new AlarmsAdapter(getActivity().getApplicationContext(), alarms);
             alarmsListView.setAdapter(alarmsAdapter);
         } else {
-            Log.d(TAG, "alarms service not bound: can't create alarm's adapter");
+            Log.d(TAG, "alarms service not bound: can't create AlarmAdapter");
         }
-
-    }
-
-    public MainActivityFragment() {
     }
 
     @Override
