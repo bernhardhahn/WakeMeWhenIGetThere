@@ -185,13 +185,15 @@ public class AlarmService extends NonStoppingIntentService implements
     private List<Geofence> getLocations() {
         List<Geofence> locations = new ArrayList<>();
         for (Alarm alarm : alarms.getAll()) {
-            locations.add(new Geofence.Builder()
-                    .setRequestId(alarm.getName())
-                    .setCircularRegion(alarm.getLat(), alarm.getLon(), alarm.getRadius())
-                    .setExpirationDuration(24 * 60 * 60 * 1000)
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                            Geofence.GEOFENCE_TRANSITION_EXIT)
-                    .build());
+            if (alarm.isActive()) {
+                locations.add(new Geofence.Builder()
+                        .setRequestId(alarm.getName())
+                        .setCircularRegion(alarm.getLat(), alarm.getLon(), alarm.getRadius())
+                        .setExpirationDuration(24 * 60 * 60 * 1000)
+                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                                Geofence.GEOFENCE_TRANSITION_EXIT)
+                        .build());
+            }
         }
         return locations;
     }

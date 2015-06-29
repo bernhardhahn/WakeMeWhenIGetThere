@@ -53,7 +53,7 @@ public class AlarmsAdapter extends BaseAdapter {
         title.setText(alarm.getName());
         coords.setText(alarm.getLat() + "/" + alarm.getLon());
         radius.setText("Radius: " + alarm.getRadius() + " m");
-        status.setText(alarm.getActive()? "active":"inactive");
+        status.setText(alarm.isActive()? "active":"inactive");
 
         return view;
     }

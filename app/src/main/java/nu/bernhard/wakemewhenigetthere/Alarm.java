@@ -43,7 +43,7 @@ public class Alarm  {
         sb.append("lon: " + getLon() + ", ");
         sb.append("lat: " + getLat() + ", ");
         sb.append("radius: " + getRadius() + ", ");
-        sb.append("active: " + getActive());
+        sb.append("active: " + isActive());
         sb.append('}');
 
         return sb.toString();
@@ -81,7 +81,7 @@ public class Alarm  {
         this.radius = radius;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 
