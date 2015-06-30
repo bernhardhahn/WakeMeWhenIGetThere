@@ -165,11 +165,19 @@ public class AlarmService extends NonStoppingIntentService implements
         }
 
         try {
-            LocationServices.GeofencingApi.addGeofences(
-                    googleApiClient,
-                    getGeofencingRequest(),
-                    getGeofencePendingIntent()
-            ).setResultCallback(this); // Result processed in onResult().
+            if (alarms.hasActiveAlarms()) {
+                LocationServices.GeofencingApi.addGeofences(
+                        googleApiClient,
+                        getGeofencingRequest(),
+                        getGeofencePendingIntent()
+                ).setResultCallback(this); // Result processed in onResult().
+            } else {
+                Log.d(TAG, "updateGeofences: no active alarms: remove all geofences");
+                LocationServices.GeofencingApi.removeGeofences(
+                        googleApiClient,
+                        getGeofencePendingIntent()
+                ).setResultCallback(this);
+            }
         } catch (SecurityException securityException) {
             Log.e(TAG, "Invalid location permission. " +
                     "You need to use ACCESS_FINE_LOCATION with geofences", securityException);
@@ -215,7 +223,7 @@ public class AlarmService extends NonStoppingIntentService implements
     @Override
     public void onResult(Status status) {
         if (status.isSuccess()) {
-            Log.d(TAG, "Add geofence: Success");
+            Log.d(TAG, "Geofence onResult: Success");
         } else {
             String errorMessage = GeofenceErrorMessages.getErrorString(
                     getApplicationContext(),

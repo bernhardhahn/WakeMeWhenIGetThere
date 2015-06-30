@@ -57,6 +57,15 @@ public class Alarms {
         }
     }
 
+    public boolean hasActiveAlarms() {
+        for (Alarm alarm : alarms) {
+            if (alarm.isActive()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addAlarmsUpdateListener(AlarmsUpdateListener listener) {
         listeners.add(listener);
     }
