@@ -9,12 +9,16 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Bernhard on 2015-06-27.
  */
 public class AlarmsAdapter extends BaseAdapter {
     private Context context;
     private Alarms alarms;
+    private List<AlarmStateObserver> observers = new ArrayList<>();
 
     public AlarmsAdapter(Context context, Alarms alarms) {
         this.context = context;
@@ -54,14 +58,34 @@ public class AlarmsAdapter extends BaseAdapter {
         coords.setText(alarm.getLat() + "/" + alarm.getLon());
         radius.setText("Radius: " + alarm.getRadius() + " m");
         status.setChecked(alarm.isActive());
+        final int index = i;
         status.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 alarm.setActive(b);
+                triggerAlarmStateChange(alarm, index);
                 notifyDataSetChanged();
             }
         });
 
         return view;
+    }
+
+    public void registerAlarmStateObserver(AlarmStateObserver observer) {
+        observers.add(observer);
+    }
+
+    public void unregisterAlarmStateObserver(AlarmStateObserver observer) {
+        observers.remove(observer);
+    }
+
+    public void triggerAlarmStateChange(Alarm alarm, int index) {
+        for (AlarmStateObserver observer : observers) {
+            observer.onAlarmStateChange(alarm, index);
+        }
+    }
+
+    public interface AlarmStateObserver {
+        void onAlarmStateChange(Alarm alarm, int index);
     }
 }
