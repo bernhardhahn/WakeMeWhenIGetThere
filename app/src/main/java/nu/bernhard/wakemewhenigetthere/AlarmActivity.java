@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 
 
 public class AlarmActivity extends AppCompatActivity {
@@ -18,6 +19,7 @@ public class AlarmActivity extends AppCompatActivity {
     private EditText newAlarmLatInput;
     private EditText newAlarmLonInput;
     private EditText newAlarmRadiusInput;
+    private Switch newAlarmActiveInput;
     private Alarm alarm;
 
     @Override
@@ -27,8 +29,11 @@ public class AlarmActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent.hasExtra(ALARM_KEY)) {
+            Log.d(TAG, "has extra");
             this.alarm = intent.getParcelableExtra(ALARM_KEY);
+            Log.d(TAG, "Alarm: " + alarm.getName());
         } else {
+            Log.d(TAG, "no extra :((");
             this.alarm = new Alarm();
         }
 
@@ -37,16 +42,12 @@ public class AlarmActivity extends AppCompatActivity {
         newAlarmLatInput = (EditText) findViewById(R.id.newAlarmLat);
         newAlarmLonInput = (EditText) findViewById(R.id.newAlarmLon);
         newAlarmRadiusInput = (EditText) findViewById(R.id.newAlarmRadius);
+        newAlarmActiveInput = (Switch) findViewById(R.id.newAlarmActive);
 
         addAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String alarmName = newAlarmNameInput.getText().toString();
-                Double lat = Double.parseDouble(newAlarmLatInput.getText().toString());
-                Double lon = Double.parseDouble(newAlarmLonInput.getText().toString());
-                Integer radius = Integer.parseInt((newAlarmRadiusInput.getText().toString()));
-
-                Alarm alarm = new Alarm(alarmName, lon, lat, radius, true);
+                ReadUserInputToAlarm();
 
                 //if (serviceBound) {
                 //    alarmService.addAlarm(alarm);
@@ -58,6 +59,19 @@ public class AlarmActivity extends AppCompatActivity {
 
         populateViewsFromAlarm();
 
+    }
+
+    private void ReadUserInputToAlarm() {
+        String alarmName = newAlarmNameInput.getText().toString();
+        Double lat = Double.parseDouble(newAlarmLatInput.getText().toString());
+        Double lon = Double.parseDouble(newAlarmLonInput.getText().toString());
+        Integer radius = Integer.parseInt((newAlarmRadiusInput.getText().toString()));
+        Boolean active = newAlarmActiveInput.isChecked();
+        alarm.setName(alarmName);
+        alarm.setLat(lat);
+        alarm.setLon(lon);
+        alarm.setRadius(radius);
+        alarm.setActive(active);
     }
 
     private void populateViewsFromAlarm() {
