@@ -71,7 +71,6 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
         alarmService.getAlarms().removeAlarmsUpdateListener(this);
         alarmsAdapter.unregisterAlarmStateObserver(this);
         getActivity().unbindService(alarmServiceConnection);
-        serviceBound = false;
 
     }
 
@@ -106,7 +105,6 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
             if (data.hasExtra(AlarmActivity.ALARM_KEY)) {
                 Alarm alarm = data.getParcelableExtra(AlarmActivity.ALARM_KEY);
                 if (serviceBound) {
-
                     alarmService.getAlarms().update(alarm);
                 }
             }
