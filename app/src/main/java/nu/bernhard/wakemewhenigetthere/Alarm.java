@@ -1,11 +1,13 @@
 package nu.bernhard.wakemewhenigetthere;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Alarm  {
+public class Alarm implements Parcelable {
 
     private Integer id = -1;
     private String name;
@@ -104,4 +106,65 @@ public class Alarm  {
     public void setId(Integer id) {
         this.id = id;
     }
+    protected Alarm(Parcel in) {
+        id = in.readByte() == 0x00 ? null : in.readInt();
+        name = in.readString();
+        lon = in.readByte() == 0x00 ? null : in.readDouble();
+        lat = in.readByte() == 0x00 ? null : in.readDouble();
+        radius = in.readByte() == 0x00 ? null : in.readInt();
+        byte activeVal = in.readByte();
+        active = activeVal == 0x02 ? null : activeVal != 0x00;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(id);
+        }
+        dest.writeString(name);
+        if (lon == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(lon);
+        }
+        if (lat == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(lat);
+        }
+        if (radius == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(radius);
+        }
+        if (active == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (active ? 0x01 : 0x00));
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Alarm> CREATOR = new Parcelable.Creator<Alarm>() {
+        @Override
+        public Alarm createFromParcel(Parcel in) {
+            return new Alarm(in);
+        }
+
+        @Override
+        public Alarm[] newArray(int size) {
+            return new Alarm[size];
+        }
+    };
 }
