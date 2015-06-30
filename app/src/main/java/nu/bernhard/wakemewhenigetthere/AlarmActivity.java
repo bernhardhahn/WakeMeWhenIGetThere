@@ -79,6 +79,7 @@ public class AlarmActivity extends AppCompatActivity {
         newAlarmLatInput.setText(String.valueOf(alarm.getLat()));
         newAlarmLonInput.setText(String.valueOf(alarm.getLon()));
         newAlarmRadiusInput.setText(String.valueOf(alarm.getRadius()));
+        newAlarmActiveInput.setChecked(alarm.isActive());
     }
 
 }
