@@ -5,14 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.os.Parcelable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 
@@ -20,12 +21,7 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
 
     private static final String TAG = MainActivityFragment.class.getName();
 
-    private Button addAlarmButton;
     private ListView alarmsListView;
-    private EditText newAlarmRadiusInput;
-    private EditText newAlarmNameInput;
-    private EditText newAlarmLatInput;
-    private EditText newAlarmLonInput;
     private AlarmsAdapter alarmsAdapter;
 
     private AlarmService alarmService;
@@ -86,32 +82,15 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        addAlarmButton = (Button) view.findViewById(R.id.addAlarmButton);
         alarmsListView = (ListView) view.findViewById(R.id.alarmsListView);
-
-        newAlarmNameInput = (EditText) view.findViewById(R.id.newAlarmName);
-        newAlarmLatInput = (EditText) view.findViewById(R.id.newAlarmLat);
-        newAlarmLonInput = (EditText) view.findViewById(R.id.newAlarmLon);
-        newAlarmRadiusInput = (EditText) view.findViewById(R.id.newAlarmRadius);
-
-        addAlarmButton.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton newAlarm = (FloatingActionButton) view.findViewById(R.id.newAlarmFab);
+        newAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String alarmName = newAlarmNameInput.getText().toString();
-                Double lat = Double.parseDouble(newAlarmLatInput.getText().toString());
-                Double lon = Double.parseDouble(newAlarmLonInput.getText().toString());
-                Integer radius = Integer.parseInt((newAlarmRadiusInput.getText().toString()));
-
-                Alarm alarm = new Alarm(alarmName, lon, lat, radius, true);
-
-                if(serviceBound) {
-                    alarmService.addAlarm(alarm);
-                    alarmsAdapter.notifyDataSetChanged();
-                }
-
+                Intent newAlarmIntent = new Intent(getActivity(), AlarmActivity.class);
+                getActivity().startActivity(newAlarmIntent);
             }
         });
-
         return view;
     }
 
