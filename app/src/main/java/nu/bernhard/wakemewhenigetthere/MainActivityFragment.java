@@ -106,6 +106,7 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
             if (data.hasExtra(AlarmActivity.ALARM_KEY)) {
                 Alarm alarm = data.getParcelableExtra(AlarmActivity.ALARM_KEY);
                 if (serviceBound) {
+
                     alarmService.getAlarms().update(alarm);
                 }
             }
@@ -119,8 +120,6 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
 
     @Override
     public void onAlarmStateChange(Alarm alarm, int index) {
-        Log.d(TAG, "onAlarmStateChange: " + alarm.getName() + " (id="+alarm.getId()+")  > " + index);
-        Log.d(TAG, "stack", new Exception());
         alarmService.getAlarms().update(alarm);
     }
 }
