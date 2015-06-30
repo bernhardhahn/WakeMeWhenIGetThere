@@ -17,7 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 
-public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdateListener {
+public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdateListener, AlarmsAdapter.AlarmStateObserver {
 
     private static final String TAG = MainActivityFragment.class.getName();
     public static final int ALARM_ACTIVITY_REQUEST_CODE = 123;
@@ -51,13 +51,7 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
         if ( serviceBound ) {
             final Alarms alarms = alarmService.getAlarms();
             alarmsAdapter = new AlarmsAdapter(getActivity().getApplicationContext(), alarms);
-            alarmsAdapter.registerAlarmStateObserver(new AlarmsAdapter.AlarmStateObserver() {
-                @Override
-                public void onAlarmStateChange(Alarm alarm, int index) {
-                    Log.d(TAG, "onAlarmStateChange: " + alarm.getName() + " (id="+alarm.getId()+")  > " + index);
-                    alarmService.getAlarms().update(alarm);
-                }
-            });
+            alarmsAdapter.registerAlarmStateObserver(this);
             alarmsListView.setAdapter(alarmsAdapter);
         } else {
             Log.d(TAG, "alarms service not bound: can't create AlarmAdapter");
@@ -75,7 +69,9 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
     public void onStop() {
         super.onStop();
         alarmService.getAlarms().removeAlarmsUpdateListener(this);
+        alarmsAdapter.unregisterAlarmStateObserver(this);
         getActivity().unbindService(alarmServiceConnection);
+        serviceBound = false;
 
     }
 
@@ -121,4 +117,10 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
         Log.d(TAG, "Alarms updated");
     }
 
+    @Override
+    public void onAlarmStateChange(Alarm alarm, int index) {
+        Log.d(TAG, "onAlarmStateChange: " + alarm.getName() + " (id="+alarm.getId()+")  > " + index);
+        Log.d(TAG, "stack", new Exception());
+        alarmService.getAlarms().update(alarm);
+    }
 }

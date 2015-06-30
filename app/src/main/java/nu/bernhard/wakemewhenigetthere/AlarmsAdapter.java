@@ -59,12 +59,11 @@ public class AlarmsAdapter extends BaseAdapter {
         radius.setText("Radius: " + alarm.getRadius() + " m");
         status.setChecked(alarm.isActive());
         final int index = i;
-        status.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        status.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                alarm.setActive(b);
+            public void onClick(View view) {
+                alarm.setActive(!alarm.isActive());
                 triggerAlarmStateChange(alarm, index);
-                notifyDataSetChanged();
             }
         });
 
