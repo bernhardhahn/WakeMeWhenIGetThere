@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             tools:text="Radius 1200 m"/>
-        <ToggleButton
+        <Switch
             android:id="@+id/alarm_list_item_active"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
