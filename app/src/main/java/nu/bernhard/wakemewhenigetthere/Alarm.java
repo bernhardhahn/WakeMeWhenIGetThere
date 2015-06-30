@@ -9,12 +9,16 @@ import org.json.JSONObject;
 
 public class Alarm implements Parcelable {
 
+    public static final double DEFAULT_LON = 58d;
+    public static final double DEFAULT_LAT = 12d;
+    public static final int DEFAULT_RADIUS = 250;
+    public static final boolean DEFAULT_ACTIVE = true;
     private Integer id = -1;
-    private String name;
-    private Double lon;
-    private Double lat;
-    private Integer radius;
-    private Boolean active;
+    private String name = "";
+    private Double lon = DEFAULT_LON;
+    private Double lat = DEFAULT_LAT;
+    private Integer radius = DEFAULT_RADIUS;
+    private Boolean active = DEFAULT_ACTIVE;
 
     public Alarm() { }
 
