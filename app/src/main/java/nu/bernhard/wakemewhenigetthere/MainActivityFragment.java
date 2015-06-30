@@ -1,11 +1,11 @@
 package nu.bernhard.wakemewhenigetthere;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -20,6 +20,7 @@ import android.widget.ListView;
 public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdateListener {
 
     private static final String TAG = MainActivityFragment.class.getName();
+    public static final int ALARM_ACTIVITY_REQUEST_CODE = 123;
 
     private ListView alarmsListView;
     private AlarmsAdapter alarmsAdapter;
@@ -97,14 +98,27 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
                 Alarm alarm = (Alarm)adapterView.getItemAtPosition(i);
                 Intent newAlarmIntent = new Intent(getActivity(), AlarmActivity.class);
                 newAlarmIntent.putExtra(AlarmActivity.ALARM_KEY, alarm);
-                getActivity().startActivity(newAlarmIntent);
+                startActivityForResult(newAlarmIntent, ALARM_ACTIVITY_REQUEST_CODE);
             }
         });
         return view;
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ALARM_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data.hasExtra(AlarmActivity.ALARM_KEY)) {
+                Alarm alarm = data.getParcelableExtra(AlarmActivity.ALARM_KEY);
+                if (serviceBound) {
+                    alarmService.getAlarms().update(alarm);
+                }
+            }
+        }
+    }
+
+    @Override
     public void onAlarmsUpdate() {
         Log.d(TAG, "Alarms updated");
     }
+
 }

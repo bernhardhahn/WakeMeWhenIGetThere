@@ -1,5 +1,6 @@
 package nu.bernhard.wakemewhenigetthere;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,7 @@ public class AlarmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         if (intent.hasExtra(ALARM_KEY)) {
             Log.d(TAG, "has extra");
             this.alarm = intent.getParcelableExtra(ALARM_KEY);
@@ -48,12 +49,11 @@ public class AlarmActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ReadUserInputToAlarm();
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(ALARM_KEY, alarm);
 
-                //if (serviceBound) {
-                //    alarmService.addAlarm(alarm);
-                //    alarmsAdapter.notifyDataSetChanged();
-                //}
-
+                setResult(Activity.RESULT_OK, intent);
+                finish();
             }
         });
 
