@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdateListener {
 
     private static final String TAG = MainActivityFragment.class.getName();
 
@@ -41,6 +41,7 @@ public class MainActivityFragment extends Fragment {
             serviceBound = true;
             Log.d(TAG, "onServiceConnected: " + className.toString());
             getAlarmsFromService();
+            alarmService.getAlarms().addAlarmsUpdateListener(MainActivityFragment.this);
         }
 
         @Override
@@ -61,9 +62,7 @@ public class MainActivityFragment extends Fragment {
                     for (int i = 0; i < alarmsAdapter.getCount(); ++i) {
                         Alarm alarm = (Alarm) alarmsAdapter.getItem(i);
                         Log.d(TAG, alarm.getName() +  "  > " + alarm.isActive());
-                    }
-                    if (serviceBound) {
-                        alarmService.updateAlarms();
+                        alarmService.getAlarms().update(alarm);
                     }
                 }
 
@@ -84,7 +83,9 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        alarmService.getAlarms().removeAlarmsUpdateListener(this);
         getActivity().unbindService(alarmServiceConnection);
+
     }
 
     @Override
@@ -120,4 +121,8 @@ public class MainActivityFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onAlarmsUpdate() {
+        Log.d(TAG, "Alarms updated");
+    }
 }

@@ -11,6 +11,7 @@ public class Alarms {
     public Integer add(Alarm alarm) {
         alarm.setId(nextId++);
         alarms.add(alarm);
+        triggerUpdateListeners();
         return alarm.getId();
     }
 
@@ -18,6 +19,7 @@ public class Alarms {
         for (int i = 0; i < alarms.size(); ++i) {
             if (alarms.get(i).getId() == alarm.getId()) {
                 alarms.set(i, alarm);
+                triggerUpdateListeners();
                 break;
             }
         }
