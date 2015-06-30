@@ -25,7 +25,7 @@ import java.util.List;
 public class AlarmService extends NonStoppingIntentService implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<Status> {
+        ResultCallback<Status>,Alarms.AlarmsUpdateListener {
 
     private static final String ACTION_FOREGROUND = "nu.bernhard.wakemewhenigetthere.action.FOREGROUND";
     private static final String ACTION_ENTER_GEOFENCE = "nu.bernhard.wakemewhenigetthere.action.ENTER_GEOFENCE";
@@ -71,7 +71,8 @@ public class AlarmService extends NonStoppingIntentService implements
         return alarms;
     }
 
-    public void updateAlarms() {
+    @Override
+    public void onAlarmsUpdate() {
         updateGeofences();
     }
 
@@ -235,6 +236,7 @@ public class AlarmService extends NonStoppingIntentService implements
         alarms.add(alarm);
         alarm = new Alarm(alarmJson3);
         alarms.add(alarm);
+        alarms.addAlarmsUpdateListener(this);
     }
 
 }
