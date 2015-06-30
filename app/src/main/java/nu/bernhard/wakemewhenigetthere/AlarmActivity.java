@@ -29,7 +29,9 @@ public class AlarmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm);
 
         final Intent intent = getIntent();
-        if (intent.hasExtra(ALARM_KEY)) {
+        if (savedInstanceState != null) {
+            this.alarm = savedInstanceState.getParcelable(ALARM_KEY);
+        } else if (intent.hasExtra(ALARM_KEY)) {
             Log.d(TAG, "has extra");
             this.alarm = intent.getParcelableExtra(ALARM_KEY);
             Log.d(TAG, "Alarm: " + alarm.getName());
@@ -48,7 +50,7 @@ public class AlarmActivity extends AppCompatActivity {
         addAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ReadUserInputToAlarm();
+                readUserInputToAlarm();
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(ALARM_KEY, alarm);
 
@@ -61,7 +63,7 @@ public class AlarmActivity extends AppCompatActivity {
 
     }
 
-    private void ReadUserInputToAlarm() {
+    private void readUserInputToAlarm() {
         String alarmName = newAlarmNameInput.getText().toString();
         Double lat = Double.parseDouble(newAlarmLatInput.getText().toString());
         Double lon = Double.parseDouble(newAlarmLonInput.getText().toString());
@@ -80,6 +82,13 @@ public class AlarmActivity extends AppCompatActivity {
         newAlarmLonInput.setText(String.valueOf(alarm.getLon()));
         newAlarmRadiusInput.setText(String.valueOf(alarm.getRadius()));
         newAlarmActiveInput.setChecked(alarm.isActive());
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        readUserInputToAlarm();
+        outState.putParcelable(ALARM_KEY, alarm);
+        super.onSaveInstanceState(outState);
     }
 
 }
