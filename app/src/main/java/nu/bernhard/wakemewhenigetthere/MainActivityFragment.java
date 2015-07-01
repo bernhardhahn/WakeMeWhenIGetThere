@@ -87,6 +87,16 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
                 startActivityForResult(newAlarmIntent, ALARM_ACTIVITY_REQUEST_CODE);
             }
         });
+        FloatingActionButton ttFab = (FloatingActionButton) view.findViewById(R.id.ttFab);
+        ttFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent showAlarmIntent = new Intent(getActivity(), ShowAlarmActivity.class);
+                showAlarmIntent.putExtra(ShowAlarmActivity.ALARM_KEY,
+                        alarmService.getAlarms().get(0));
+                getActivity().startActivity(showAlarmIntent);
+            }
+        });
         alarmsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
