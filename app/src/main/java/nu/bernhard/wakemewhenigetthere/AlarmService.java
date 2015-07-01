@@ -239,8 +239,8 @@ public class AlarmService extends NonStoppingIntentService implements
 
     private void initAlarms() {
         String alarmJson = "{name: \"Test Alarm\", lon: 15.566608, lat: 58.412103, radius: 250, active: true, id: 1}";
-        String alarmJson2 = "{name: \"Test Alarm22\", lon: 15.566608, lat: 58.412103, radius: 500, active: true, id: 2}";
-        String alarmJson3 = "{name: \"Test Alarm333\", lon: 15.566608, lat: 58.412103, radius: 1250, active: true, id: -1}";
+        String alarmJson2 = "{name: \"Test Alarm22\", lon: 15.566608, lat: 58.412103, radius: 500, active: false, id: 2}";
+        String alarmJson3 = "{name: \"Test Alarm333\", lon: 15.566608, lat: 58.412103, radius: 1250, active: false, id: -1}";
 
         alarms = new Alarms();
         Alarm alarm = new Alarm(alarmJson);
