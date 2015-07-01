@@ -10,12 +10,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
     public static final String ALARM_KEY = "alarm";
     private static final String TAG = AlarmActivity.class.getName();
 
@@ -87,24 +91,55 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private void populateViewsFromAlarm() {
         newAlarmNameInput.setText(alarm.getName());
-        newAlarmLatInput.setText(String.valueOf(alarm.getLat()));
-        newAlarmLonInput.setText(String.valueOf(alarm.getLon()));
+        setLatLonInputViews();
         newAlarmRadiusInput.setText(String.valueOf(alarm.getRadius()));
         newAlarmActiveInput.setChecked(alarm.isActive());
     }
 
+    private void setLatLonInputViews() {
+        newAlarmLatInput.setText(String.valueOf(alarm.getLat()));
+        newAlarmLonInput.setText(String.valueOf(alarm.getLon()));
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        mapView.onSaveInstanceState(outState);
         readUserInputToAlarm();
         outState.putParcelable(ALARM_KEY, alarm);
-        mapView.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "map ready!");
         this.map = googleMap;
+        LatLng position = setMapMarkerFromAlarm();
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
+        map.setOnMapClickListener(this);
+    }
+
+    private LatLng setMapMarkerFromAlarm() {
+        clearMapMarkers();
+        LatLng position = new LatLng(alarm.getLat(), alarm.getLon());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(position);
+        map.addMarker(markerOptions);
+        CircleOptions circleOptions = getCircleOptions(position, alarm.getRadius());
+        map.addCircle(circleOptions);
+        return position;
+    }
+
+    private void clearMapMarkers() {
+        map.clear();
+    }
+
+    private CircleOptions getCircleOptions(LatLng position, Integer radius) {
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.center(position);
+        circleOptions.radius(radius);
+        circleOptions.fillColor(0x447EC386);
+        circleOptions.strokeWidth(4f);
+        circleOptions.strokeColor(0xFF7EC386);
+        return circleOptions;
     }
 
     @Override
@@ -130,4 +165,13 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
         super.onLowMemory();
         mapView.onLowMemory();
     }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        alarm.setLat(latLng.latitude);
+        alarm.setLon(latLng.longitude);
+        setLatLonInputViews();
+        setMapMarkerFromAlarm();
+    }
+
 }
