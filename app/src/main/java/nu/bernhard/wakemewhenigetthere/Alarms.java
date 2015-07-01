@@ -33,6 +33,15 @@ public class Alarms {
         return alarms.get(index);
     }
 
+    public Alarm getById(int id) throws Exception {
+        for (Alarm alarm : alarms) {
+            if (alarm.getId() == id) {
+                return alarm;
+            }
+        }
+        throw new Exception("Alarms: could not find Alarm with id=" + id);
+    }
+
     public List<Alarm> getAll() {
         return alarms;
     }

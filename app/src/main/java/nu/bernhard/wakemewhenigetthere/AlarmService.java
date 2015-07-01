@@ -33,6 +33,7 @@ public class AlarmService extends NonStoppingIntentService implements
     private static final String EXTRA_FOREGROUND_VALUE = "nu.bernhard.wakemewhenigetthere.extra.FOREGROUND_VALUE";
     private static final String EXTRA_GEOFENCE_ID = "nu.bernhard.wakemewhenigetthere.extra.GEOFENCE_ID";
     private static final String TAG = "AlarmService";
+    public static final String GEOFENCE_ID_PREFIX = "GeoAlarm";
     private IBinder binder  = new AlarmServiceBinder();
     private Alarms alarms = new Alarms();
     private GoogleApiClient googleApiClient;
@@ -107,17 +108,21 @@ public class AlarmService extends NonStoppingIntentService implements
     }
 
     private void handleActionEnterGeofence(String geofenceId) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-        builder.setContentTitle("AlarmService");
-        builder.setContentText("Enter: " + geofenceId);
-        builder.setSmallIcon(android.R.drawable.ic_media_play);
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-        builder.setContentIntent(pendingIntent);
-        Notification notification = builder.build();
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(getApplicationContext());
-        notificationManager.notify(1, notification);
+        try {
+            Log.d(TAG, "handleActionEnterGeofence for geofenceId: " + geofenceId);
+            Intent intent = new Intent(getApplicationContext(), ShowAlarmActivity.class);
+            Alarm alarm = getAlarmFromGeofenceId(geofenceId);
+            intent.putExtra(ShowAlarmActivity.ALARM_KEY, alarm);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, "handleActionEnterGeofence found no alarm matching geofenceId=" + geofenceId);
+        }
+    }
+
+    private Alarm getAlarmFromGeofenceId(String geofenceId) throws Exception {
+        Integer id = Integer.parseInt(geofenceId.replace(GEOFENCE_ID_PREFIX, ""));
+        return alarms.getById(id);
     }
 
     private void handleActionForeground(Boolean foreground) {
@@ -200,7 +205,7 @@ public class AlarmService extends NonStoppingIntentService implements
         for (Alarm alarm : alarms.getAll()) {
             if (alarm.isActive()) {
                 locations.add(new Geofence.Builder()
-                        .setRequestId(alarm.getName())
+                        .setRequestId(GEOFENCE_ID_PREFIX + alarm.getId())
                         .setCircularRegion(alarm.getLat(), alarm.getLon(), alarm.getRadius())
                         .setExpirationDuration(24 * 60 * 60 * 1000)
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
