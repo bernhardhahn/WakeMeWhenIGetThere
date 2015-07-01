@@ -1,3 +1,6 @@
+#don't commit api-keys
+app/src/main/res/values/api_keys.xml
+
 .gradle
 /local.properties
 /.idea/workspace.xml
