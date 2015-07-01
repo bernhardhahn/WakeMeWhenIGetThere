@@ -73,12 +73,11 @@
             android:layout_weight="0.5"
             android:text="Radius" />
 
-        <EditText
-            android:id="@+id/newAlarmRadius"
-            android:layout_width="wrap_content"
+        <nu.bernhard.wakemewhenigetthere.DiscreteSeekBar
+            android:id="@+id/newAlarmRadiusSeekbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:inputType="number" />
+            android:layout_weight="0.5"/>
     </LinearLayout>
 
     <LinearLayout

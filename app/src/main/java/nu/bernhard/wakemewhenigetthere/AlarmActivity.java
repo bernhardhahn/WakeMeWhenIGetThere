@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Switch;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,8 +28,8 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
     private EditText newAlarmNameInput;
     private EditText newAlarmLatInput;
     private EditText newAlarmLonInput;
-    private EditText newAlarmRadiusInput;
     private Switch newAlarmActiveInput;
+    private DiscreteSeekBar newAlarmRadiusSeekBar;
     private Alarm alarm;
     private GoogleMap map;
     private MapView mapView;
@@ -54,8 +55,26 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
         newAlarmNameInput = (EditText) findViewById(R.id.newAlarmName);
         newAlarmLatInput = (EditText) findViewById(R.id.newAlarmLat);
         newAlarmLonInput = (EditText) findViewById(R.id.newAlarmLon);
-        newAlarmRadiusInput = (EditText) findViewById(R.id.newAlarmRadius);
         newAlarmActiveInput = (Switch) findViewById(R.id.newAlarmActive);
+        newAlarmRadiusSeekBar = (DiscreteSeekBar) findViewById(R.id.newAlarmRadiusSeekbar);
+        newAlarmRadiusSeekBar.setValue(alarm.getRadius());
+        newAlarmRadiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                Integer radius = ((DiscreteSeekBar) seekBar).getValue();
+                Log.d(TAG, "Radius: " + radius);
+                alarm.setRadius(radius);
+                setMapMarkerFromAlarm();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
         mapView = (MapView) findViewById(R.id.map);
         mapView.getMapAsync(this);
         mapView.onCreate(savedInstanceState);
@@ -80,7 +99,7 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
         String alarmName = newAlarmNameInput.getText().toString();
         Double lat = Double.parseDouble(newAlarmLatInput.getText().toString());
         Double lon = Double.parseDouble(newAlarmLonInput.getText().toString());
-        Integer radius = Integer.parseInt((newAlarmRadiusInput.getText().toString()));
+        Integer radius = newAlarmRadiusSeekBar.getValue();
         Boolean active = newAlarmActiveInput.isChecked();
         alarm.setName(alarmName);
         alarm.setLat(lat);
@@ -92,7 +111,7 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
     private void populateViewsFromAlarm() {
         newAlarmNameInput.setText(alarm.getName());
         setLatLonInputViews();
-        newAlarmRadiusInput.setText(String.valueOf(alarm.getRadius()));
+        newAlarmRadiusSeekBar.setValue(alarm.getRadius());
         newAlarmActiveInput.setChecked(alarm.isActive());
     }
 
