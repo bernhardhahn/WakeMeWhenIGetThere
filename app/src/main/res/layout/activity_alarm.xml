@@ -104,5 +104,10 @@
         android:layout_height="wrap_content"
         android:text="@string/add_alarm" />
 
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>
 

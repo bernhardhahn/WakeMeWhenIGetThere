@@ -10,8 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
-public class AlarmActivity extends AppCompatActivity {
+
+public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallback {
     public static final String ALARM_KEY = "alarm";
     private static final String TAG = AlarmActivity.class.getName();
 
@@ -22,6 +26,8 @@ public class AlarmActivity extends AppCompatActivity {
     private EditText newAlarmRadiusInput;
     private Switch newAlarmActiveInput;
     private Alarm alarm;
+    private GoogleMap map;
+    private MapView mapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,9 @@ public class AlarmActivity extends AppCompatActivity {
         newAlarmLonInput = (EditText) findViewById(R.id.newAlarmLon);
         newAlarmRadiusInput = (EditText) findViewById(R.id.newAlarmRadius);
         newAlarmActiveInput = (Switch) findViewById(R.id.newAlarmActive);
+        mapView = (MapView) findViewById(R.id.map);
+        mapView.getMapAsync(this);
+        mapView.onCreate(savedInstanceState);
 
         addAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +97,37 @@ public class AlarmActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         readUserInputToAlarm();
         outState.putParcelable(ALARM_KEY, alarm);
+        mapView.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Log.d(TAG, "map ready!");
+        this.map = googleMap;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
 }
