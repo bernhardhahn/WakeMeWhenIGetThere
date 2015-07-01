@@ -26,8 +26,6 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private Button addAlarmButton;
     private EditText newAlarmNameInput;
-    private EditText newAlarmLatInput;
-    private EditText newAlarmLonInput;
     private Switch newAlarmActiveInput;
     private DiscreteSeekBar newAlarmRadiusSeekBar;
     private Alarm alarm;
@@ -53,8 +51,6 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
 
         addAlarmButton = (Button) findViewById(R.id.addAlarmButton);
         newAlarmNameInput = (EditText) findViewById(R.id.newAlarmName);
-        newAlarmLatInput = (EditText) findViewById(R.id.newAlarmLat);
-        newAlarmLonInput = (EditText) findViewById(R.id.newAlarmLon);
         newAlarmActiveInput = (Switch) findViewById(R.id.newAlarmActive);
         newAlarmRadiusSeekBar = (DiscreteSeekBar) findViewById(R.id.newAlarmRadiusSeekbar);
         newAlarmRadiusSeekBar.setValue(alarm.getRadius());
@@ -97,28 +93,19 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private void readUserInputToAlarm() {
         String alarmName = newAlarmNameInput.getText().toString();
-        Double lat = Double.parseDouble(newAlarmLatInput.getText().toString());
-        Double lon = Double.parseDouble(newAlarmLonInput.getText().toString());
         Integer radius = newAlarmRadiusSeekBar.getValue();
         Boolean active = newAlarmActiveInput.isChecked();
         alarm.setName(alarmName);
-        alarm.setLat(lat);
-        alarm.setLon(lon);
         alarm.setRadius(radius);
         alarm.setActive(active);
     }
 
     private void populateViewsFromAlarm() {
         newAlarmNameInput.setText(alarm.getName());
-        setLatLonInputViews();
         newAlarmRadiusSeekBar.setValue(alarm.getRadius());
         newAlarmActiveInput.setChecked(alarm.isActive());
     }
 
-    private void setLatLonInputViews() {
-        newAlarmLatInput.setText(String.valueOf(alarm.getLat()));
-        newAlarmLonInput.setText(String.valueOf(alarm.getLon()));
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -189,7 +176,6 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
     public void onMapClick(LatLng latLng) {
         alarm.setLat(latLng.latitude);
         alarm.setLon(latLng.longitude);
-        setLatLonInputViews();
         setMapMarkerFromAlarm();
     }
 
