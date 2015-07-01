@@ -16,6 +16,10 @@ public class Alarms {
     }
 
     public void update(Alarm alarm) {
+        if (alarm.getId() == -1) {
+            add(alarm);
+            return;
+        }
         for (int i = 0; i < alarms.size(); ++i) {
             if (alarms.get(i).getId() == alarm.getId()) {
                 alarms.set(i, alarm);

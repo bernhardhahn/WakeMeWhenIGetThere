@@ -84,7 +84,7 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
             @Override
             public void onClick(View view) {
                 Intent newAlarmIntent = new Intent(getActivity(), AlarmActivity.class);
-                getActivity().startActivity(newAlarmIntent);
+                startActivityForResult(newAlarmIntent, ALARM_ACTIVITY_REQUEST_CODE);
             }
         });
         alarmsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

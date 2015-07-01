@@ -81,8 +81,7 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
                 readUserInputToAlarm();
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(ALARM_KEY, alarm);
-
-                setResult(Activity.RESULT_OK, intent);
+                setResult(Activity.RESULT_OK, resultIntent);
                 finish();
             }
         });
