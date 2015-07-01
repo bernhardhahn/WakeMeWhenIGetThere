@@ -52,7 +52,7 @@ public class Alarm implements Parcelable {
     public String toJSON()  {
         StringBuilder sb = new StringBuilder();
         sb.append('{');
-        sb.append("lon: " + getId() + ", ");
+        sb.append("id: " + getId() + ", ");
         sb.append("name: \"" + getName().toString() + "\", ");
         sb.append("lon: " + getLon() + ", ");
         sb.append("lat: " + getLat() + ", ");
