@@ -42,6 +42,21 @@ public class AlarmAlertActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getWindow().addFlags(
+                //special flag to let windows be shown when the screen is locked.
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                //when set the window will cause the keyguard to be dismissed,
+                // only if it is not a secure lock keyguard.
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                //as long as this window is visible to the user, keep the
+                // device's screen turned on and bright.
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                //when set as a window is being added or made visible,
+                // once the window has been shown then the system will
+                // poke the power manager's user activity (as if the
+                // user had woken up the device) to turn the screen on.
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
         setContentView(R.layout.activity_show_alarm);
 
         Intent intent = getIntent();
