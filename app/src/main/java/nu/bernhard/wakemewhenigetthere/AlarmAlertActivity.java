@@ -8,7 +8,8 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.KeyEvent;
+
+import android.os.Vibrator;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -18,6 +19,7 @@ public class AlarmAlertActivity extends Activity {
 
     private static final String TAG = AlarmAlertActivity.class.getName();
     public static final String ALARM_KEY = "alarm";
+    private static final long[] vibratePattern = new long[] { 500, 500 };
 
     private Alarm alarm;
     private boolean serviceBound;
@@ -108,12 +110,22 @@ public class AlarmAlertActivity extends Activity {
         return;
     }
 
-    private void stopAlarm() {
-
+    private void triggerAlarm() {
+        startVibration();
     }
 
-    private void triggerAlarm() {
+    private void stopAlarm() {
+        endVibration();
+    }
 
+    private void startVibration() {
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(vibratePattern, 0);
+    }
+
+    private void endVibration() {
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.cancel();
     }
 
 }
