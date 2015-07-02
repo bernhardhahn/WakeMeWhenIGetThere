@@ -112,7 +112,7 @@ public class AlarmService extends NonStoppingIntentService implements
             Intent intent = new Intent(getApplicationContext(), AlarmAlertActivity.class);
             Alarm alarm = getAlarmFromGeofenceId(geofenceId);
             intent.putExtra(AlarmAlertActivity.ALARM_KEY, alarm);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
             startActivity(intent);
         } catch (Exception e) {
             Log.e(TAG, "handleActionEnterGeofence found no alarm matching geofenceId=" + geofenceId);
