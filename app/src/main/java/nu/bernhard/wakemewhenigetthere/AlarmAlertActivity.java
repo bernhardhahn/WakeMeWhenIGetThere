@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -97,6 +98,16 @@ public class AlarmAlertActivity extends Activity {
         unbindService(alarmServiceConnection);
 
     }
+
+    /*
+    / Ignore back button. We don't want the user to accidentally
+    / dismiss the alarm
+    */
+    @Override
+    public void onBackPressed() {
+        return;
+    }
+
     private void stopAlarm() {
 
     }
