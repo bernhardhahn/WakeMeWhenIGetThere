@@ -7,8 +7,6 @@ import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
-import java.util.ArrayList;
-
 import java.util.List;
 
 
@@ -19,15 +17,15 @@ import java.util.List;
  * the transition type and geofence id(s) that triggered the transition. Creates a notification
  * as the output.
  */
-public class GeofenceTransitionsIntentService extends IntentService {
+public class GeofenceService extends IntentService {
 
-    private static final String TAG = GeofenceTransitionsIntentService.class.getName();
+    private static final String TAG = GeofenceService.class.getName();
 
     /**
      * This constructor is required, and calls the super IntentService(String)
      * constructor with the name for a worker thread.
      */
-    public GeofenceTransitionsIntentService() {
+    public GeofenceService() {
         super(TAG);
     }
 

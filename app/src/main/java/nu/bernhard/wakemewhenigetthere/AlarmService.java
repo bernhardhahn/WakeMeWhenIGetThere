@@ -217,7 +217,7 @@ public class AlarmService extends NonStoppingIntentService implements
 
     private PendingIntent getGeofencePendingIntent() {
         Intent intent = new Intent(getApplicationContext(),
-                GeofenceTransitionsIntentService.class);
+                GeofenceService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
         // addGeofences() and removeGeofences().
         return PendingIntent.getService(getApplicationContext(),
