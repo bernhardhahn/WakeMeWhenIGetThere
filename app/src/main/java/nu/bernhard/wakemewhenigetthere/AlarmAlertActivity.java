@@ -5,6 +5,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -14,6 +18,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import java.io.IOException;
+
 
 public class AlarmAlertActivity extends Activity {
 
@@ -21,7 +27,12 @@ public class AlarmAlertActivity extends Activity {
     public static final String ALARM_KEY = "alarm";
     private static final long[] vibratePattern = new long[] { 500, 500 };
 
+    private MediaPlayer mediaPlayer;
+    private AudioManager audioManager;
+    private int systemAlarmVolumeSetting;
+    private boolean audioRunning;
     private Alarm alarm;
+
     private boolean serviceBound;
     private AlarmService alarmService;
     private ServiceConnection alarmServiceConnection = new ServiceConnection() {
@@ -39,7 +50,7 @@ public class AlarmAlertActivity extends Activity {
             serviceBound = false;
             Log.d(TAG, "onServiceConnected: " + className.toString());
         }
-    };;
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,10 +123,67 @@ public class AlarmAlertActivity extends Activity {
 
     private void triggerAlarm() {
         startVibration();
+        startAudioAlarm();
     }
 
     private void stopAlarm() {
         endVibration();
+        endAudioAlarm();
+    }
+
+    private void startAudioAlarm() {
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        // save current volume
+        systemAlarmVolumeSetting = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+        } else {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    Log.d(TAG, "Error playing audio alarm."
+                            + "\nwhat: " + what
+                            + "\nextra: " + extra);
+                    endAudioAlarm();
+                    return true;
+                }
+            });
+        }
+
+        try {
+            Uri ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            mediaPlayer.setDataSource(this, ringtone);
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.prepare();
+            audioManager.requestAudioFocus(null, AudioManager.STREAM_ALARM,
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+            mediaPlayer.start();
+        } catch (IOException e) {
+            mediaPlayer.reset();
+            e.printStackTrace();
+        }
+
+        audioRunning = true;
+    }
+
+    private void endAudioAlarm() {
+        if (audioRunning) {
+            audioRunning = false;
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
+                //restore audio volume
+                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, systemAlarmVolumeSetting, 0);
+                audioManager.abandonAudioFocus(null);
+                audioManager = null;
+            }
+        }
     }
 
     private void startVibration() {
