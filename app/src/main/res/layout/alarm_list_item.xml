@@ -28,24 +28,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.5" />
-        </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/alarm_list_item_coords"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            tools:text="58.566608, 58.412103"/>
-        <TextView
-            android:id="@+id/alarm_list_item_radius"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            tools:text="Radius 1200 m"/>
-
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/alarm_list_item_radius"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.3"
+        tools:text="Radius 1200 m"/>
 
 </LinearLayout>

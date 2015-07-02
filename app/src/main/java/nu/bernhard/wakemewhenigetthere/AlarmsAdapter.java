@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -49,13 +48,11 @@ public class AlarmsAdapter extends BaseAdapter {
         }
 
         TextView title = (TextView)view.findViewById(R.id.alarm_list_item_title);
-        TextView coords = (TextView)view.findViewById(R.id.alarm_list_item_coords);
         TextView radius = (TextView)view.findViewById(R.id.alarm_list_item_radius);
         Switch status = (Switch)view.findViewById(R.id.alarm_list_item_active);
 
         final Alarm alarm = alarms.get(i);
         title.setText(alarm.getName());
-        coords.setText(alarm.getLat() + "/" + alarm.getLon());
         radius.setText("Radius: " + alarm.getRadius() + " m");
         status.setChecked(alarm.isActive());
         final int index = i;
