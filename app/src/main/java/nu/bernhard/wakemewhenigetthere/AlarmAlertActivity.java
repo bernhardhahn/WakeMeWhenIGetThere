@@ -9,12 +9,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 
 
-public class ShowAlarmActivity extends Activity {
+public class AlarmAlertActivity extends Activity {
 
-    private static final String TAG = ShowAlarmActivity.class.getName();
+    private static final String TAG = AlarmAlertActivity.class.getName();
     public static final String ALARM_KEY = "alarm";
 
     private Alarm alarm;

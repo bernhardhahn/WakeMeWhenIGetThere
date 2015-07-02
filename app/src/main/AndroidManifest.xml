@@ -20,7 +20,7 @@
             android:name=".AlarmActivity">
         </activity>
         <activity
-            android:name=".ShowAlarmActivity">
+            android:name=".AlarmAlertActivity">
         </activity>
 
         <service android:name=".GeofenceTransitionsIntentService" />

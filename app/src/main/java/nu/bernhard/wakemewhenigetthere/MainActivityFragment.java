@@ -91,8 +91,8 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
         ttFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent showAlarmIntent = new Intent(getActivity(), ShowAlarmActivity.class);
-                showAlarmIntent.putExtra(ShowAlarmActivity.ALARM_KEY,
+                Intent showAlarmIntent = new Intent(getActivity(), AlarmAlertActivity.class);
+                showAlarmIntent.putExtra(AlarmAlertActivity.ALARM_KEY,
                         alarmService.getAlarms().get(0));
                 getActivity().startActivity(showAlarmIntent);
             }

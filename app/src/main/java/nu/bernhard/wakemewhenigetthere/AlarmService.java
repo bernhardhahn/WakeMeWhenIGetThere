@@ -8,7 +8,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -110,9 +109,9 @@ public class AlarmService extends NonStoppingIntentService implements
     private void handleActionEnterGeofence(String geofenceId) {
         try {
             Log.d(TAG, "handleActionEnterGeofence for geofenceId: " + geofenceId);
-            Intent intent = new Intent(getApplicationContext(), ShowAlarmActivity.class);
+            Intent intent = new Intent(getApplicationContext(), AlarmAlertActivity.class);
             Alarm alarm = getAlarmFromGeofenceId(geofenceId);
-            intent.putExtra(ShowAlarmActivity.ALARM_KEY, alarm);
+            intent.putExtra(AlarmAlertActivity.ALARM_KEY, alarm);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } catch (Exception e) {
