@@ -18,7 +18,7 @@ import android.widget.Button;
 import java.io.IOException;
 
 
-public class AlarmAlertActivity extends Activity {
+public class AlarmAlertActivity extends VisibleActivity {
 
     private static final String TAG = AlarmAlertActivity.class.getName();
     public static final String ALARM_KEY = "alarm";

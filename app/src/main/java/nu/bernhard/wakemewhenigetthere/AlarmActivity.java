@@ -20,7 +20,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class AlarmActivity extends VisibleActivity
+        implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
     public static final String ALARM_KEY = "alarm";
     private static final String TAG = AlarmActivity.class.getName();
 

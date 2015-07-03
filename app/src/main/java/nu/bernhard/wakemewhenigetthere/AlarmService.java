@@ -1,7 +1,9 @@
 package nu.bernhard.wakemewhenigetthere;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.Context;
 import android.os.Binder;
@@ -30,7 +32,7 @@ public class AlarmService extends NonStoppingIntentService implements
         GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<Status>,Alarms.AlarmsUpdateListener {
 
-    private static final String ACTION_FOREGROUND = "WMWIGT.action.FOREGROUND";
+    private static final String ACTION_UPDATE_NOTIFICATION = "WMWIGT.action.FOREGROUND";
     private static final String ACTION_ENTER_GEOFENCE = "WMWIGT.action.ENTER_GEOFENCE";
 
     private static final String EXTRA_FOREGROUND_VALUE = "WMWIGT.extra.FOREGROUND_VALUE";
@@ -38,14 +40,15 @@ public class AlarmService extends NonStoppingIntentService implements
     private static final String TAG = "AlarmService";
     public static final String GEOFENCE_ID_PREFIX = "GeoAlarm";
     public static final String ALARMS_FILE_NAME = "alarms.data";
+    public static final String ACTION_SHOW_NOTIFICATION = "WMWIGT.action.SHOW_NOTIFICATION";
+    public static final String PRIVATE_PERMISSION = "nu.bernhard.wakemewhenigetthere.PRIVATE";
     private IBinder binder  = new AlarmServiceBinder();
     private Alarms alarms = new Alarms();
     private GoogleApiClient googleApiClient;
 
-    public static void setForeground(Context context, boolean foreground) {
+    public static void updateNotification(Context context) {
         Intent intent = new Intent(context, AlarmService.class);
-        intent.setAction(ACTION_FOREGROUND);
-        intent.putExtra(EXTRA_FOREGROUND_VALUE, foreground);
+        intent.setAction(ACTION_UPDATE_NOTIFICATION);
         context.startService(intent);
     }
 
@@ -104,9 +107,8 @@ public class AlarmService extends NonStoppingIntentService implements
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_FOREGROUND.equals(action)) {
-                final Boolean foreground = intent.getBooleanExtra(EXTRA_FOREGROUND_VALUE, false);
-                handleActionForeground(foreground);
+            if (ACTION_UPDATE_NOTIFICATION.equals(action)) {
+                handleActionUpdateNotification();
             } else if (ACTION_ENTER_GEOFENCE.equals(action)) {
                 final String geofenceId = intent.getStringExtra(EXTRA_GEOFENCE_ID);
                 handleActionEnterGeofence(geofenceId);
@@ -136,21 +138,34 @@ public class AlarmService extends NonStoppingIntentService implements
         return alarms.getById(id);
     }
 
-    private void handleActionForeground(Boolean foreground) {
+    private void handleActionUpdateNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setContentTitle("AlarmService");
         builder.setContentText("yolo!");
         builder.setSmallIcon(android.R.drawable.ic_media_play);
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0,  intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
         builder.setContentIntent(pendingIntent);
         Notification notification = builder.build();
 
-        if (foreground) {
-            startForeground(1, notification);
-        } else {
-            stopForeground(true);
-        }
+
+        Intent broadcastIntent = new Intent(ACTION_SHOW_NOTIFICATION);
+        broadcastIntent.putExtra("NOTIFICATION", notification);
+        sendOrderedBroadcast(broadcastIntent, null,
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Log.d(TAG, "broadcastReceiver got message: " + intent.getAction());
+                        Log.d(TAG, "broadcastReceiver result code: " + getResultCode());
+
+                        if (getResultCode() == Activity.RESULT_OK) {
+                            Notification notification = intent.getParcelableExtra("NOTIFICATION");
+                            startForeground(1, notification);
+                        } else {
+                            stopForeground(true);
+                        }
+                    }
+                }, null, Activity.RESULT_OK, null, null);
     }
 
     @Override
