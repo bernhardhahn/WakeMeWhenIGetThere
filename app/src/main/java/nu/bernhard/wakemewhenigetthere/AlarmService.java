@@ -20,15 +20,8 @@ import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONTokener;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -266,29 +259,14 @@ public class AlarmService extends NonStoppingIntentService implements
     }
 
     private void loadAlarms() {
+        Log.d(TAG, "loadAlarms");
         try {
-            readAlarmsFromDisk();
+            JSONArray jsonArray = JSONFileReader.readJSONArrayFromFile(
+                    getApplicationContext(), ALARMS_FILE_NAME);
+            alarms = new Alarms(jsonArray);
         } catch (Exception e) {
             e.printStackTrace();
             alarms = new Alarms();
-        }
-    }
-
-    private void readAlarmsFromDisk() throws IOException, JSONException {
-        BufferedReader reader = null;
-        try {
-            InputStream in = getApplicationContext().openFileInput(ALARMS_FILE_NAME);
-            reader = new BufferedReader(new InputStreamReader(in));
-            StringBuilder jsonString = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                jsonString.append(line);
-            }
-            JSONArray array = (JSONArray) new JSONTokener(jsonString.toString()).nextValue();
-            alarms = new Alarms(array);
-        } finally {
-            if (reader != null)
-                reader.close();
         }
     }
 
