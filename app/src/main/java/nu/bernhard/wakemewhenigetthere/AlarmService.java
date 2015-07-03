@@ -258,25 +258,10 @@ public class AlarmService extends NonStoppingIntentService implements
     private void saveAlarms() {
         Log.d(TAG, "saveAlarms");
         try {
-            writeAlarmsToDisk();
+            JSONFileWriter.writeToFile(getApplicationContext(),
+                    ALARMS_FILE_NAME, alarms.toJSON());
         } catch (IOException | JSONException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void writeAlarmsToDisk() throws IOException, JSONException {
-        Log.d(TAG, "writeAlarmsToDisk");
-        Writer writer = null;
-        try {
-            OutputStream out = getApplicationContext()
-                    .openFileOutput(ALARMS_FILE_NAME, Context.MODE_PRIVATE);
-            writer = new OutputStreamWriter(out);
-            String jsonStr = alarms.toJSON().toString();
-            Log.d(TAG, "writeAlarmsToDisk: jsonStr: " + jsonStr);
-            writer.write(jsonStr);
-        } finally {
-            if (writer != null)
-                writer.close();
         }
     }
 
