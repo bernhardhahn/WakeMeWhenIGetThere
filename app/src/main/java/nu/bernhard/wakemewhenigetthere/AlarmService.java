@@ -101,11 +101,6 @@ public class AlarmService extends NonStoppingIntentService implements
         }
     }
 
-    public void addAlarm(Alarm alarm) {
-        alarms.add(alarm);
-        updateGeofences();
-    }
-
     private void handleActionEnterGeofence(String geofenceId) {
         try {
             Log.d(TAG, "handleActionEnterGeofence for geofenceId: " + geofenceId);
