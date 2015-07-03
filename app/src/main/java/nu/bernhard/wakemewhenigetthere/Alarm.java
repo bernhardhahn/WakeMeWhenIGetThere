@@ -13,6 +13,12 @@ public class Alarm implements Parcelable {
     public static final double DEFAULT_LAT = 12d;
     public static final int DEFAULT_RADIUS = 250;
     public static final boolean DEFAULT_ACTIVE = true;
+    private static final String JSON_ID = "id";
+    private static final String JSON_NAME = "name";
+    private static final String JSON_LON = "lon";
+    private static final String JSON_LAT = "lat";
+    private static final String JSON_RADIUS = "radius";
+    private static final String JSON_ACTIVE = "active";
     private Integer id = -1;
     private String name = "";
     private Double lon = DEFAULT_LON;
@@ -38,29 +44,26 @@ public class Alarm implements Parcelable {
     public Alarm(String jsonString) {
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
-            setId(jsonObject.getInt("id"));
-            setName(jsonObject.getString("name"));
-            setLon(jsonObject.getDouble("lon"));
-            setLat(jsonObject.getDouble("lat"));
-            setRadius(jsonObject.getInt("radius"));
-            setActive(jsonObject.getBoolean("active"));
+            setId(jsonObject.getInt(JSON_ID));
+            setName(jsonObject.getString(JSON_NAME));
+            setLon(jsonObject.getDouble(JSON_LON));
+            setLat(jsonObject.getDouble(JSON_LAT));
+            setRadius(jsonObject.getInt(JSON_RADIUS));
+            setActive(jsonObject.getBoolean(JSON_ACTIVE));
         } catch (JSONException e) {
             Log.d("Alarm", "Failed to parse JSON: " + jsonString);
         }
     }
 
-    public String toJSON()  {
-        StringBuilder sb = new StringBuilder();
-        sb.append('{');
-        sb.append("id: " + getId() + ", ");
-        sb.append("name: \"" + getName().toString() + "\", ");
-        sb.append("lon: " + getLon() + ", ");
-        sb.append("lat: " + getLat() + ", ");
-        sb.append("radius: " + getRadius() + ", ");
-        sb.append("active: " + isActive());
-        sb.append('}');
-
-        return sb.toString();
+    public JSONObject toJSON() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put(JSON_ID , getId());
+        json.put(JSON_NAME, getName());
+        json.put(JSON_LON, getLon());
+        json.put(JSON_LAT, getLat());
+        json.put(JSON_RADIUS, getRadius());
+        json.put(JSON_ACTIVE, isActive());
+        return json;
     }
 
     public String getName() {

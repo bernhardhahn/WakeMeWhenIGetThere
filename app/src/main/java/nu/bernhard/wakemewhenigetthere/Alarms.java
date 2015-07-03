@@ -1,5 +1,8 @@
 package nu.bernhard.wakemewhenigetthere;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,18 +53,12 @@ public class Alarms {
         return alarms.size();
     }
 
-    public String toJSON() {
-        StringBuilder sb = new StringBuilder();
-        sb.append('[');
+    public JSONArray toJSON() throws JSONException {
+        JSONArray json = new JSONArray();
         for (Alarm alarm : alarms) {
-            sb.append(alarm.toJSON()).append(", ");
+            json.put(alarm.toJSON());
         }
-        if (sb.length() > 1) {
-            sb.delete(sb.length() - 2, sb.length());
-        }
-        sb.append(']');
-
-        return sb.toString();
+        return json;
     }
 
     private void triggerUpdateListeners() {
