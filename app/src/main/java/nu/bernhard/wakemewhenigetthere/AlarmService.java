@@ -18,6 +18,17 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONTokener;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +44,7 @@ public class AlarmService extends NonStoppingIntentService implements
     private static final String EXTRA_GEOFENCE_ID = "WMWIGT.extra.GEOFENCE_ID";
     private static final String TAG = "AlarmService";
     public static final String GEOFENCE_ID_PREFIX = "GeoAlarm";
+    public static final String ALARMS_FILE_NAME = "alarms.data";
     private IBinder binder  = new AlarmServiceBinder();
     private Alarms alarms = new Alarms();
     private GoogleApiClient googleApiClient;
@@ -58,13 +70,20 @@ public class AlarmService extends NonStoppingIntentService implements
     @Override
     public void onCreate() {
         super.onCreate();
-        initAlarms();
+        loadAlarms();
+        alarms.addAlarmsUpdateListener(this);
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
         googleApiClient.connect();
+    }
+
+    @Override
+    public void onDestroy() {
+        saveAlarms();
+        super.onDestroy();
     }
 
     public Alarms getAlarms() {
@@ -74,6 +93,7 @@ public class AlarmService extends NonStoppingIntentService implements
     @Override
     public void onAlarmsUpdate() {
         updateGeofences();
+        saveAlarms();
     }
 
     public class AlarmServiceBinder extends Binder {
@@ -235,19 +255,56 @@ public class AlarmService extends NonStoppingIntentService implements
         }
     }
 
-    private void initAlarms() {
-        String alarmJson = "{name: \"Test Alarm\", lon: 15.566608, lat: 58.412103, radius: 250, active: true, id: 1}";
-        String alarmJson2 = "{name: \"Test Alarm22\", lon: 15.566608, lat: 58.412103, radius: 500, active: false, id: 2}";
-        String alarmJson3 = "{name: \"Test Alarm333\", lon: 15.566608, lat: 58.412103, radius: 1250, active: false, id: -1}";
+    private void saveAlarms() {
+        Log.d(TAG, "saveAlarms");
+        try {
+            writeAlarmsToDisk();
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
-        alarms = new Alarms();
-        Alarm alarm = new Alarm(alarmJson);
-        alarms.add(alarm);
-        alarm = new Alarm(alarmJson2);
-        alarms.add(alarm);
-        alarm = new Alarm(alarmJson3);
-        alarms.add(alarm);
-        alarms.addAlarmsUpdateListener(this);
+    private void writeAlarmsToDisk() throws IOException, JSONException {
+        Log.d(TAG, "writeAlarmsToDisk");
+        Writer writer = null;
+        try {
+            OutputStream out = getApplicationContext()
+                    .openFileOutput(ALARMS_FILE_NAME, Context.MODE_PRIVATE);
+            writer = new OutputStreamWriter(out);
+            String jsonStr = alarms.toJSON().toString();
+            Log.d(TAG, "writeAlarmsToDisk: jsonStr: " + jsonStr);
+            writer.write(jsonStr);
+        } finally {
+            if (writer != null)
+                writer.close();
+        }
+    }
+
+    private void loadAlarms() {
+        try {
+            readAlarmsFromDisk();
+        } catch (Exception e) {
+            e.printStackTrace();
+            alarms = new Alarms();
+        }
+    }
+
+    private void readAlarmsFromDisk() throws IOException, JSONException {
+        BufferedReader reader = null;
+        try {
+            InputStream in = getApplicationContext().openFileInput(ALARMS_FILE_NAME);
+            reader = new BufferedReader(new InputStreamReader(in));
+            StringBuilder jsonString = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonString.append(line);
+            }
+            JSONArray array = (JSONArray) new JSONTokener(jsonString.toString()).nextValue();
+            alarms = new Alarms(array);
+        } finally {
+            if (reader != null)
+                reader.close();
+        }
     }
 
 }
