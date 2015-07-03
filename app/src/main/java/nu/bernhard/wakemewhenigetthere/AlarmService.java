@@ -111,6 +111,10 @@ public class AlarmService extends NonStoppingIntentService implements
             Log.d(TAG, "handleActionEnterGeofence for geofenceId: " + geofenceId);
             Intent intent = new Intent(getApplicationContext(), AlarmAlertActivity.class);
             Alarm alarm = getAlarmFromGeofenceId(geofenceId);
+            //deactivate alarms to straight away to avoid re-triggering before
+            //user reacts to the alarm.
+            alarm.setActive(false);
+            alarms.update(alarm);
             intent.putExtra(AlarmAlertActivity.ALARM_KEY, alarm);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
             startActivity(intent);
