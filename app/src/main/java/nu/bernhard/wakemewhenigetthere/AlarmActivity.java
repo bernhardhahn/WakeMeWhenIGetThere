@@ -40,6 +40,12 @@ public class AlarmActivity extends AppCompatActivity implements OnMapReadyCallba
         final Intent intent = getIntent();
         if (savedInstanceState != null) {
             this.alarm = savedInstanceState.getParcelable(ALARM_KEY);
+            //We must redirect saveInstanceState to mapView
+            //but there is a bug in google map, and it will
+            //try to unbundle our parcelable but will fail
+            //since it does not have the classloader.
+            //That's why we must remove our parcelable.
+            savedInstanceState.remove(ALARM_KEY);
         } else if (intent.hasExtra(ALARM_KEY)) {
             Log.d(TAG, "has extra");
             this.alarm = intent.getParcelableExtra(ALARM_KEY);
