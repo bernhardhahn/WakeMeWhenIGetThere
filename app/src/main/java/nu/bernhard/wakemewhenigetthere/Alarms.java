@@ -11,6 +11,14 @@ public class Alarms {
     private Integer nextId = 1;
     private List<AlarmsUpdateListener> listeners = new ArrayList<>();
 
+    public Alarms() { }
+
+    public Alarms(JSONArray jsonArray) throws JSONException {
+        for (int i = 0; i < jsonArray.length(); i++) {
+            alarms.add(new Alarm(jsonArray.getJSONObject(i)));
+        }
+    }
+
     public Integer add(Alarm alarm) {
         alarm.setId(nextId++);
         alarms.add(alarm);
