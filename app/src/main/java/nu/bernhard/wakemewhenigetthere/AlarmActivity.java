@@ -15,6 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -124,8 +125,14 @@ public class AlarmActivity extends VisibleActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
+        UiSettings uiSettings = map.getUiSettings();
+        uiSettings.setMapToolbarEnabled(false);
+        uiSettings.setCompassEnabled(false);
+        uiSettings.setMyLocationButtonEnabled(true);
+        uiSettings.setZoomControlsEnabled(true);
         LatLng position = setMapMarkerFromAlarm();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
+        map.setMyLocationEnabled(true);
         map.setOnMapClickListener(this);
     }
 
