@@ -25,7 +25,7 @@ public abstract class VisibleActivity extends AppCompatActivity {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter(AlarmService.ACTION_SHOW_NOTIFICATION);
         registerReceiver(showNotificationReceiver, intentFilter,
-                AlarmService.PRIVATE_PERMISSION, null);
+                Manifest.permission.PRIVATE, null);
     }
 
     @Override

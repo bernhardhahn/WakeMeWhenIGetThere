@@ -42,7 +42,6 @@ public class AlarmService extends NonStoppingIntentService implements
     public static final String GEOFENCE_ID_PREFIX = "GeoAlarm";
     public static final String ALARMS_FILE_NAME = "alarms.data";
     public static final String ACTION_SHOW_NOTIFICATION = "WMWIGT.action.SHOW_NOTIFICATION";
-    public static final String PRIVATE_PERMISSION = "nu.bernhard.wakemewhenigetthere.PRIVATE";
     private IBinder binder  = new AlarmServiceBinder();
     private Alarms alarms = new Alarms();
     private GoogleApiClient googleApiClient;
