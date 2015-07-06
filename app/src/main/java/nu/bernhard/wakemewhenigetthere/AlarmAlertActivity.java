@@ -69,7 +69,8 @@ public class AlarmAlertActivity extends VisibleActivity {
         TextView locationName = (TextView) findViewById(R.id.nowEnteringLocationName);
         locationName.setText(alarm.getName());
 
-        registerReceiver(broadcastReceiver, new IntentFilter(CLOSE_ACTIVITY));
+        registerReceiver(broadcastReceiver, new IntentFilter(CLOSE_ACTIVITY),
+                Manifest.permission.PRIVATE, null);
     }
 
     @Override

@@ -61,7 +61,8 @@ public class AlarmAlertService extends NonStoppingIntentService {
     }
 
     private void broadcastActivityClose() {
-        sendBroadcast(new Intent(AlarmAlertActivity.CLOSE_ACTIVITY));
+        sendBroadcast(new Intent(AlarmAlertActivity.CLOSE_ACTIVITY),
+                Manifest.permission.PRIVATE);
     }
 
     private void showActivity(Alarm alarm) {
