@@ -3,7 +3,6 @@ package nu.bernhard.wakemewhenigetthere;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +25,7 @@ public class AlarmActivity extends VisibleActivity
     public static final String ALARM_KEY = "alarm";
     private static final String TAG = AlarmActivity.class.getName();
 
-    private Button addAlarmButton;
+    private Button saveAlarmButton;
     private EditText newAlarmNameInput;
     private Switch newAlarmActiveInput;
     private DiscreteSeekBar newAlarmRadiusSeekBar;
@@ -57,7 +56,7 @@ public class AlarmActivity extends VisibleActivity
             this.alarm = new Alarm();
         }
 
-        addAlarmButton = (Button) findViewById(R.id.addAlarmButton);
+        saveAlarmButton = (Button) findViewById(R.id.saveAlarmButton);
         newAlarmNameInput = (EditText) findViewById(R.id.newAlarmName);
         newAlarmActiveInput = (Switch) findViewById(R.id.newAlarmActive);
         newAlarmRadiusSeekBar = (DiscreteSeekBar) findViewById(R.id.newAlarmRadiusSeekbar);
@@ -83,7 +82,7 @@ public class AlarmActivity extends VisibleActivity
         mapView.getMapAsync(this);
         mapView.onCreate(savedInstanceState);
 
-        addAlarmButton.setOnClickListener(new View.OnClickListener() {
+        saveAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 readUserInputToAlarm();
