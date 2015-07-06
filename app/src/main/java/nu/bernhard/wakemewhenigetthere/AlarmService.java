@@ -37,7 +37,6 @@ public class AlarmService extends NonStoppingIntentService implements
     private static final String ACTION_UPDATE_NOTIFICATION = "WMWIGT.action.FOREGROUND";
     private static final String ACTION_ENTER_GEOFENCE = "WMWIGT.action.ENTER_GEOFENCE";
 
-    private static final String EXTRA_FOREGROUND_VALUE = "WMWIGT.extra.FOREGROUND_VALUE";
     private static final String EXTRA_GEOFENCE_ID = "WMWIGT.extra.GEOFENCE_ID";
     private static final String TAG = "AlarmService";
     public static final String GEOFENCE_ID_PREFIX = "GeoAlarm";
