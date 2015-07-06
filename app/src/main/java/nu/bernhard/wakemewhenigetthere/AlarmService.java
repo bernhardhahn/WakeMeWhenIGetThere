@@ -127,7 +127,7 @@ public class AlarmService extends NonStoppingIntentService implements
             //user reacts to the alarm.
             alarm.setActive(false);
             alarms.update(alarm);
-            intent.putExtra(AlarmAlertActivity.ALARM_KEY, alarm);
+            intent.putExtra(AlarmAlertService.ALARM_KEY, alarm);
             intent.setAction(AlarmAlertService.START_ALARM);
             startService(intent);
         } catch (Exception e) {

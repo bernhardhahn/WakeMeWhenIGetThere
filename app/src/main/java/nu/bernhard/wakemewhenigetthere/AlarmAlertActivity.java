@@ -1,37 +1,29 @@
 package nu.bernhard.wakemewhenigetthere;
 
-import android.content.ComponentName;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 
-import android.os.Vibrator;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.IOException;
-
 
 public class AlarmAlertActivity extends VisibleActivity {
 
     private static final String TAG = AlarmAlertActivity.class.getName();
-    public static final String ALARM_KEY = "alarm";
-    private static final long[] vibratePattern = new long[] { 500, 500 };
-
-    private MediaPlayer mediaPlayer;
-    private AudioManager audioManager;
-    private int systemAlarmVolumeSetting;
-    private boolean audioRunning;
+    public static final String CLOSE_ACTIVITY = "CLOSE_ACTIVITY";
     private Alarm alarm;
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            AlarmAlertActivity.this.finish();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +47,9 @@ public class AlarmAlertActivity extends VisibleActivity {
         setContentView(R.layout.activity_alarm_alert);
 
         Intent intent = getIntent();
-        if (intent.hasExtra(ALARM_KEY)) {
-            Alarm alarm = intent.getParcelableExtra(ALARM_KEY);
+        if (intent.hasExtra(AlarmAlertService.ALARM_KEY)) {
+            Alarm alarm = intent.getParcelableExtra(AlarmAlertService.ALARM_KEY);
             this.alarm = alarm;
-            triggerAlarm();
         } else {
             Log.d(TAG, "ShowAlarmActivity launched without Alarm");
             finish();
@@ -68,98 +59,29 @@ public class AlarmAlertActivity extends VisibleActivity {
         dismissButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopAlarm();
-                finish();
+                Intent intent = new Intent(getApplicationContext(), AlarmAlertService.class);
+                intent.setAction(AlarmAlertService.STOP_ALARM);
+                startService(intent);
+
             }
         });
 
         TextView locationName = (TextView) findViewById(R.id.nowEnteringLocationName);
         locationName.setText(alarm.getName());
 
+        registerReceiver(broadcastReceiver, new IntentFilter(CLOSE_ACTIVITY));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
     public void onBackPressed() {
         // Ignore back button. We don't want the user to accidentally  dismiss the alarm
         return;
-    }
-
-    private void triggerAlarm() {
-        startVibration();
-        startAudioAlarm();
-    }
-
-    private void stopAlarm() {
-        endVibration();
-        endAudioAlarm();
-        Intent alarmAlertServiceIntent = new Intent(this, AlarmAlertService.class);
-        alarmAlertServiceIntent.setAction(AlarmAlertService.STOP_ALARM);
-        startService(alarmAlertServiceIntent);
-    }
-
-    private void startAudioAlarm() {
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        // save current volume
-        systemAlarmVolumeSetting = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
-
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-            }
-        } else {
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra) {
-                    Log.d(TAG, "Error playing audio alarm."
-                            + "\nwhat: " + what
-                            + "\nextra: " + extra);
-                    endAudioAlarm();
-                    return true;
-                }
-            });
-        }
-
-        try {
-            Uri ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            mediaPlayer.setDataSource(this, ringtone);
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-            mediaPlayer.setLooping(true);
-            mediaPlayer.prepare();
-            audioManager.requestAudioFocus(null, AudioManager.STREAM_ALARM,
-                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-            mediaPlayer.start();
-        } catch (IOException e) {
-            mediaPlayer.reset();
-            e.printStackTrace();
-        }
-
-        audioRunning = true;
-    }
-
-    private void endAudioAlarm() {
-        if (audioRunning) {
-            audioRunning = false;
-            if (mediaPlayer != null) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaPlayer = null;
-                //restore audio volume
-                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, systemAlarmVolumeSetting, 0);
-                audioManager.abandonAudioFocus(null);
-                audioManager = null;
-            }
-        }
-    }
-
-    private void startVibration() {
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate(vibratePattern, 0);
-    }
-
-    private void endVibration() {
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.cancel();
     }
 
 }
