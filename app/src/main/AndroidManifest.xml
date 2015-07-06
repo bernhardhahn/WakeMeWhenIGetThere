@@ -30,6 +30,7 @@
         <activity
             android:name=".AlarmActivity">
         </activity>
+        <!-- alert activity should not be rotated -->
         <activity
             android:name=".AlarmAlertActivity"
             android:theme="@style/FullScreen"
