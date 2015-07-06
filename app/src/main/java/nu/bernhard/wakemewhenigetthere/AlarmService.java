@@ -139,6 +139,11 @@ public class AlarmService extends NonStoppingIntentService implements
     }
 
     private void handleActionUpdateNotification() {
+        if (!alarms.hasActiveAlarms()) {
+            Log.d(TAG, "no active alarms... don't show notification");
+            stopForeground(true);
+            return;
+        }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setContentTitle("AlarmService");
         builder.setContentText("yolo!");
@@ -157,7 +162,8 @@ public class AlarmService extends NonStoppingIntentService implements
                     public void onReceive(Context context, Intent intent) {
                         Log.d(TAG, "broadcastReceiver got message: " + intent.getAction());
                         Log.d(TAG, "broadcastReceiver result code: " + getResultCode());
-
+                        //if no activity has canceled the broadcast go ahead and show the
+                        //notification.
                         if (getResultCode() == Activity.RESULT_OK) {
                             Notification notification = intent.getParcelableExtra("NOTIFICATION");
                             startForeground(1, notification);
