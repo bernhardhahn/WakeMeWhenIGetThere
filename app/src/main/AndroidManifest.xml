@@ -31,7 +31,8 @@
             android:name=".AlarmActivity">
         </activity>
         <activity
-            android:name=".AlarmAlertActivity">
+            android:name=".AlarmAlertActivity"
+            android:theme="@style/FullScreen">
         </activity>
 
         <service android:name=".GeofenceService" />
