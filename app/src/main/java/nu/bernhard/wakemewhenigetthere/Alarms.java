@@ -15,7 +15,7 @@ public class Alarms {
 
     public Alarms(JSONArray jsonArray) throws JSONException {
         for (int i = 0; i < jsonArray.length(); i++) {
-            alarms.add(new Alarm(jsonArray.getJSONObject(i)));
+            add(new Alarm(jsonArray.getJSONObject(i)));
         }
     }
 
