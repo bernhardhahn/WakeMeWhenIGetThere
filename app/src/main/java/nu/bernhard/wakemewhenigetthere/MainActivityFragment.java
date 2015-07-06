@@ -10,7 +10,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -91,13 +93,35 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
         alarmsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Alarm alarm = (Alarm)adapterView.getItemAtPosition(i);
+                Alarm alarm = (Alarm) adapterView.getItemAtPosition(i);
                 Intent showAlarmIntent = new Intent(getActivity(), AlarmActivity.class);
                 showAlarmIntent.putExtra(AlarmActivity.ALARM_KEY, alarm);
                 startActivityForResult(showAlarmIntent, ALARM_ACTIVITY_REQUEST_CODE);
             }
         });
+        alarmsListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu contextMenu, View view,
+                                            ContextMenu.ContextMenuInfo contextMenuInfo) {
+                getActivity().getMenuInflater().inflate(
+                        R.menu.alarm_list_item_context_menu, contextMenu);
+            }
+        });
         return view;
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int position = info.position;
+        if (item.getItemId() == R.id.deleteAlarm) {
+            Alarm alarm = (Alarm) alarmsAdapter.getItem(position);
+            alarmService.getAlarms().removeById(alarm.getId());
+            alarmsAdapter.notifyDataSetChanged();
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     @Override

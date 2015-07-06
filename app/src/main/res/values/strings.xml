@@ -16,4 +16,5 @@
     <string name="save_alarm">Save</string>
     <string name="dismiss_alarm">Dismiss Alarm</string>
     <string name="now_entering_title">Now entering</string>
+    <string name="delete_alarm_menu_title">Delete</string>
 </resources>

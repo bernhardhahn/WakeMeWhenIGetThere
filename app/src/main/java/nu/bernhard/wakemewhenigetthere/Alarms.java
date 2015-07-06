@@ -53,6 +53,15 @@ public class Alarms {
         throw new Exception("Alarms: could not find Alarm with id=" + id);
     }
 
+    public void removeById(int id) {
+        for (int i = alarms.size() - 1; i >= 0; --i) {
+            if (alarms.get(i).getId() == id) {
+                alarms.remove(alarms.get(i));
+            }
+        }
+        triggerUpdateListeners();
+    }
+
     public List<Alarm> getAll() {
         return alarms;
     }
