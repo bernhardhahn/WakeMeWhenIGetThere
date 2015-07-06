@@ -74,12 +74,9 @@ public class AlarmAlertActivity extends VisibleActivity {
         locationName.setText(alarm.getName());
     }
 
-    /*
-    / Ignore back button. We don't want the user to accidentally
-    / dismiss the alarm
-    */
     @Override
     public void onBackPressed() {
+        // Ignore back button. We don't want the user to accidentally  dismiss the alarm
         return;
     }
 
