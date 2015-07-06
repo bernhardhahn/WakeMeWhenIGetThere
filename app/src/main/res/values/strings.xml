@@ -15,4 +15,5 @@
     <string name="unknown_geofence_transition">Unknown Transition</string>
     <string name="save_alarm">Save</string>
     <string name="dismiss_alarm">Dismiss Alarm</string>
+    <string name="now_entering_title">Now entering</string>
 </resources>
