@@ -1,12 +1,15 @@
 package nu.bernhard.wakemewhenigetthere;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 
 import android.os.Vibrator;
@@ -72,6 +75,7 @@ public class AlarmAlertActivity extends VisibleActivity {
 
         TextView locationName = (TextView) findViewById(R.id.nowEnteringLocationName);
         locationName.setText(alarm.getName());
+
     }
 
     @Override
@@ -88,6 +92,9 @@ public class AlarmAlertActivity extends VisibleActivity {
     private void stopAlarm() {
         endVibration();
         endAudioAlarm();
+        Intent alarmAlertServiceIntent = new Intent(this, AlarmAlertService.class);
+        alarmAlertServiceIntent.setAction(AlarmAlertService.STOP_ALARM);
+        startService(alarmAlertServiceIntent);
     }
 
     private void startAudioAlarm() {
