@@ -1,6 +1,5 @@
 package nu.bernhard.wakemewhenigetthere;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -49,7 +48,7 @@ public class AlarmAlertActivity extends VisibleActivity {
                 // user had woken up the device) to turn the screen on.
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
-        setContentView(R.layout.activity_show_alarm);
+        setContentView(R.layout.activity_alarm_alert);
 
         Intent intent = getIntent();
         if (intent.hasExtra(ALARM_KEY)) {

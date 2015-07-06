@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ff102f0b"
-    android:id="@+id/tt"
     tools:context="nu.bernhard.wakemewhenigetthere.AlarmAlertActivity">
 
     <Button
