@@ -70,6 +70,16 @@ public class Alarms {
         return alarms.size();
     }
 
+    public int getActivAlarmCount() {
+        int activeCount = 0;
+        for (Alarm alarm : alarms) {
+            if (alarm.isActive()) {
+                activeCount++;
+            }
+        }
+        return  activeCount;
+    }
+
     public JSONArray toJSON() throws JSONException {
         JSONArray json = new JSONArray();
         for (Alarm alarm : alarms) {

@@ -144,9 +144,22 @@ public class AlarmService extends NonStoppingIntentService implements
             stopForeground(true);
             return;
         }
+        String contentText = "";
+        int activeAlarmsCount = alarms.getActivAlarmCount();
+        if (activeAlarmsCount > 1) {
+            contentText = String.valueOf(activeAlarmsCount)
+                    + " active alarms";
+        } else {
+            for (Alarm alarm : alarms.getAll()) {
+                if (alarm.isActive()) {
+                    contentText = alarm.getName() + " is active";
+                }
+            }
+        }
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-        builder.setContentTitle("AlarmService");
-        builder.setContentText("yolo!");
+        builder.setContentTitle("Wake Me When I Get There ");
+        builder.setContentText(contentText);
         builder.setSmallIcon(android.R.drawable.ic_media_play);
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
