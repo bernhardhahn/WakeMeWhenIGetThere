@@ -147,18 +147,19 @@ public class AlarmService extends NonStoppingIntentService implements
         String contentText = "";
         int activeAlarmsCount = alarms.getActivAlarmCount();
         if (activeAlarmsCount > 1) {
-            contentText = String.valueOf(activeAlarmsCount)
-                    + " active alarms";
+            contentText = getApplicationContext().getString(
+                    R.string.notification_text_alarm_count, activeAlarmsCount);
         } else {
             for (Alarm alarm : alarms.getAll()) {
                 if (alarm.isActive()) {
-                    contentText = alarm.getName() + " is active";
+                    contentText = getApplicationContext().getString(
+                            R.string.notification_text_alarm_name, alarm.getName());
                 }
             }
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-        builder.setContentTitle("Wake Me When I Get There ");
+        builder.setContentTitle(getString(R.string.notification_content_title));
         builder.setContentText(contentText);
         builder.setSmallIcon(android.R.drawable.ic_media_play);
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);

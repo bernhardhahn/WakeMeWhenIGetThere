@@ -17,4 +17,7 @@
     <string name="dismiss_alarm">Dismiss Alarm</string>
     <string name="now_entering_title">Now entering</string>
     <string name="delete_alarm_menu_title">Delete</string>
+    <string name="notification_content_title">Wake Me When I Get There</string>
+    <string name="notification_text_alarm_name">"%s is active"</string>
+    <string name="notification_text_alarm_count">"%d active alarms"</string>
 </resources>
