@@ -14,4 +14,5 @@
     <string name="geofence_transition_exited">Exited</string>
     <string name="unknown_geofence_transition">Unknown Transition</string>
     <string name="save_alarm">Save</string>
+    <string name="dismiss_alarm">Dismiss Alarm</string>
 </resources>
