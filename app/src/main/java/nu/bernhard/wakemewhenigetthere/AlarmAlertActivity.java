@@ -17,6 +17,7 @@ public class AlarmAlertActivity extends VisibleActivity {
 
     private static final String TAG = AlarmAlertActivity.class.getName();
     public static final String CLOSE_ACTIVITY = "CLOSE_ACTIVITY";
+    private static final String ALARM_KEY = "ALARM";
     private Alarm alarm;
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -46,13 +47,17 @@ public class AlarmAlertActivity extends VisibleActivity {
 
         setContentView(R.layout.activity_alarm_alert);
 
-        Intent intent = getIntent();
-        if (intent.hasExtra(AlarmAlertService.ALARM_KEY)) {
-            Alarm alarm = intent.getParcelableExtra(AlarmAlertService.ALARM_KEY);
-            this.alarm = alarm;
+        if (savedInstanceState != null && savedInstanceState.containsKey(ALARM_KEY)) {
+            alarm = savedInstanceState.getParcelable(ALARM_KEY);
         } else {
-            Log.d(TAG, "ShowAlarmActivity launched without Alarm");
-            finish();
+            Intent intent = getIntent();
+            if (intent.hasExtra(AlarmAlertService.ALARM_KEY)) {
+                Alarm alarm = intent.getParcelableExtra(AlarmAlertService.ALARM_KEY);
+                this.alarm = alarm;
+            } else {
+                Log.d(TAG, "ShowAlarmActivity launched without Alarm");
+                finish();
+            }
         }
 
         Button dismissButton = (Button) findViewById(R.id.dismissAlarmButton);
@@ -77,6 +82,13 @@ public class AlarmAlertActivity extends VisibleActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(broadcastReceiver);
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(ALARM_KEY, alarm);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

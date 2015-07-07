@@ -33,9 +33,7 @@
         <!-- alert activity should not be rotated -->
         <activity
             android:name=".AlarmAlertActivity"
-            android:theme="@style/FullScreen"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:theme="@style/FullScreen">
         </activity>
 
         <service android:name=".GeofenceService" />
