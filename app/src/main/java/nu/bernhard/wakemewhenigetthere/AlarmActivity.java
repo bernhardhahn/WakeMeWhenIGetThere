@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
-import android.widget.Switch;
+import  android.support.v7.widget.SwitchCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,7 +27,7 @@ public class AlarmActivity extends VisibleActivity
 
     private Button saveAlarmButton;
     private EditText newAlarmNameInput;
-    private Switch newAlarmActiveInput;
+    private SwitchCompat newAlarmActiveInput;
     private DiscreteSeekBar newAlarmRadiusSeekBar;
     private Alarm alarm;
     private GoogleMap map;
@@ -58,7 +58,7 @@ public class AlarmActivity extends VisibleActivity
 
         saveAlarmButton = (Button) findViewById(R.id.saveAlarmButton);
         newAlarmNameInput = (EditText) findViewById(R.id.newAlarmName);
-        newAlarmActiveInput = (Switch) findViewById(R.id.newAlarmActive);
+        newAlarmActiveInput = (SwitchCompat) findViewById(R.id.newAlarmActive);
         newAlarmRadiusSeekBar = (DiscreteSeekBar) findViewById(R.id.newAlarmRadiusSeekbar);
         newAlarmRadiusSeekBar.setValue(alarm.getRadius());
         newAlarmRadiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

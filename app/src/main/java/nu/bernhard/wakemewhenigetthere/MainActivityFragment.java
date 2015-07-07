@@ -52,7 +52,7 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
     private void getAlarmsFromService() {
         if ( serviceBound ) {
             final Alarms alarms = alarmService.getAlarms();
-            alarmsAdapter = new AlarmsAdapter(getActivity().getApplicationContext(), alarms);
+            alarmsAdapter = new AlarmsAdapter(getActivity(), alarms);
             alarmsAdapter.registerAlarmStateObserver(this);
             alarmsListView.setAdapter(alarmsAdapter);
         } else {

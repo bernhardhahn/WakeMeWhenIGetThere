@@ -1,11 +1,11 @@
 package nu.bernhard.wakemewhenigetthere;
 
 import android.content.Context;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,17 +39,17 @@ public class AlarmsAdapter extends BaseAdapter {
         return id;
     }
 
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if (view == null)
-        {
+        if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.alarm_list_item, viewGroup, false);
         }
 
         TextView title = (TextView)view.findViewById(R.id.alarm_list_item_title);
         TextView radius = (TextView)view.findViewById(R.id.alarm_list_item_radius);
-        Switch status = (Switch)view.findViewById(R.id.alarm_list_item_active);
+        SwitchCompat status = (SwitchCompat)view.findViewById(R.id.alarm_list_item_active);
 
         final Alarm alarm = alarms.get(i);
         title.setText(alarm.getName());
