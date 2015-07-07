@@ -18,4 +18,6 @@
     <string name="notification_content_title">Wake Me When I Get There</string>
     <string name="notification_text_alarm_name">"%s is active"</string>
     <string name="notification_text_alarm_count">"%d active alarms"</string>
+    <string name="empty_alarm_list_title">No Alarms</string>
+    <string name="empty_alarm_list_text">Tap the green button at the bottom to add an alarm.</string>
 </resources>

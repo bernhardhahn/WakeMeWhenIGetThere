@@ -107,6 +107,7 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
                         R.menu.alarm_list_item_context_menu, contextMenu);
             }
         });
+        alarmsListView.setEmptyView(view.findViewById(R.id.empty));
         return view;
     }
 
