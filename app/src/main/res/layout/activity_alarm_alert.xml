@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ff102f0b"
+    android:background="@color/primary"
     tools:context="nu.bernhard.wakemewhenigetthere.AlarmAlertActivity">
 
 
@@ -18,6 +18,7 @@
             android:gravity="center_horizontal"
             android:textSize="18sp"
             android:text="@string/now_entering_title"
+            android:textColor="@color/primary_light"
             android:layout_marginBottom="6dp" />
 
         <TextView
@@ -27,15 +28,19 @@
             android:gravity="center_horizontal"
             android:textSize="48sp"
             android:text=""
-            tools:text="Linköping"
-            android:layout_marginBottom="22dp" />
+            android:textColor="@color/icons"
+            android:layout_marginBottom="22dp"
+            tools:text="Linköping" />
 
         <Button
             android:id="@+id/dismissAlarmButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/dismiss_alarm"
-            android:textSize="48sp" />
+            android:textSize="48sp"
+            android:padding="10dp"
+            android:textColor="@color/icons"
+            android:background="@color/accent"/>
 
     </LinearLayout>
 </FrameLayout>
