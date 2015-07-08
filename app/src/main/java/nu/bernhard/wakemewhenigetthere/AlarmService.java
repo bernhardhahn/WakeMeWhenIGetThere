@@ -146,7 +146,7 @@ public class AlarmService extends NonStoppingIntentService implements
             return;
         }
         String contentText = "";
-        int activeAlarmsCount = alarms.getActivAlarmCount();
+        int activeAlarmsCount = alarms.getActiveAlarmCount();
         if (activeAlarmsCount > 1) {
             contentText = getApplicationContext().getString(
                     R.string.notification_text_alarm_count, activeAlarmsCount);

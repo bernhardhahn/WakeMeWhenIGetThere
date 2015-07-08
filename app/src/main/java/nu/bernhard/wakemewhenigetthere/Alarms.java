@@ -70,7 +70,7 @@ public class Alarms {
         return alarms.size();
     }
 
-    public int getActivAlarmCount() {
+    public int getActiveAlarmCount() {
         int activeCount = 0;
         for (Alarm alarm : alarms) {
             if (alarm.isActive()) {
