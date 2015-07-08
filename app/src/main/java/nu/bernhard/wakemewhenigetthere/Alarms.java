@@ -32,7 +32,7 @@ public class Alarms {
             return;
         }
         for (int i = 0; i < alarms.size(); ++i) {
-            if (alarms.get(i).getId() == alarm.getId()) {
+            if (alarms.get(i).getId().equals(alarm.getId())) {
                 alarms.set(i, alarm);
                 triggerUpdateListeners();
                 break;
