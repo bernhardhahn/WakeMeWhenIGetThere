@@ -29,11 +29,6 @@ public class GeofenceService extends IntentService {
         super(TAG);
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
     /**
      * Handles incoming intents.
      * @param intent sent by Location Services. This Intent is provided to Location
