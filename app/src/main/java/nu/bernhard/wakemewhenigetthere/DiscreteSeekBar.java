@@ -1,13 +1,12 @@
 package nu.bernhard.wakemewhenigetthere;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.SeekBar;
 
 
 public class DiscreteSeekBar extends SeekBar {
-    private Integer[] values = {100, 250, 500, 1000, 2500, 5000, 10000};
+    private Integer[] values = {100, 250, 500, 1000, 2500, 5000, 10000, 25000};
 
     public DiscreteSeekBar(Context context) {
         super(context);
