@@ -33,10 +33,11 @@
             android:layout_height="8dp" />
 
         <TextView
+            android:id="@+id/alarmRadiusLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/radius_input_title" />
+            android:text="@string/radius_title" />
 
         <nu.bernhard.wakemewhenigetthere.DiscreteSeekBar
             android:id="@+id/alarmRadiusSeekbar"

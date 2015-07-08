@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import  android.support.v7.widget.SwitchCompat;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -66,6 +67,7 @@ public class AlarmActivity extends VisibleActivity
                 Integer radius = ((DiscreteSeekBar) seekBar).getValue();
                 Log.d(TAG, "Radius: " + radius);
                 alarm.setRadius(radius);
+                setRadiusLabel(radius);
                 setMapMarkerFromAlarm();
             }
 
@@ -93,6 +95,14 @@ public class AlarmActivity extends VisibleActivity
         });
 
         populateViewsFromAlarm();
+        setRadiusLabel(alarm.getRadius());
+    }
+
+    private void setRadiusLabel(Integer radiusInMetres) {
+        TextView radiusLabel = (TextView) findViewById(R.id.alarmRadiusLabel);
+        String unit = radiusInMetres >= 1000 ? "km" : "m";
+        int radius = radiusInMetres >= 1000 ? radiusInMetres / 1000 : radiusInMetres;
+        radiusLabel.setText(getString(R.string.radius_title, radius, unit));
     }
 
     private void readUserInputToAlarm() {
