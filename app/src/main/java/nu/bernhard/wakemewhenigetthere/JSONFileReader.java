@@ -25,7 +25,7 @@ public class JSONFileReader {
     }
 
     private static JSONTokener readJSONTokenerFromFile(Context context, String filename)
-            throws IOException, JSONException {
+            throws IOException {
         BufferedReader reader = null;
         try {
             InputStream in = context.openFileInput(filename);
