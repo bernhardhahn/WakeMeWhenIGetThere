@@ -11,7 +11,7 @@ import android.util.Log;
 
 public abstract class VisibleActivity extends AppCompatActivity {
 
-    private BroadcastReceiver showNotificationReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver showNotificationReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
