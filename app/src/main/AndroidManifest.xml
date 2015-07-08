@@ -13,6 +13,10 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="nu.bernhard.wakemewhenigetthere.PRIVATE"/>
 
+    <!-- google maps openGL ES -->
+    <uses-feature android:glEsVersion="0x00020000"
+        android:required="true"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon_flat"
@@ -45,8 +49,4 @@
             android:value="@string/google_api_key"/>
     </application>
 
-    <!-- google maps openGL ES -->
-    <uses-feature
-        android:glEsVersion="0x00020000"
-        android:required="true"/>
 </manifest>
