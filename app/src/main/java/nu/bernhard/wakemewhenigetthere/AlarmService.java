@@ -34,14 +34,15 @@ public class AlarmService extends NonStoppingIntentService implements
         GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<Status>,Alarms.AlarmsUpdateListener {
 
+    public static final String ACTION_SHOW_NOTIFICATION = "WMWIGT.action.SHOW_NOTIFICATION";
+
+    private static final String TAG = "AlarmService";
     private static final String ACTION_UPDATE_NOTIFICATION = "WMWIGT.action.FOREGROUND";
     private static final String ACTION_ENTER_GEOFENCE = "WMWIGT.action.ENTER_GEOFENCE";
-
     private static final String EXTRA_GEOFENCE_ID = "WMWIGT.extra.GEOFENCE_ID";
-    private static final String TAG = "AlarmService";
-    public static final String GEOFENCE_ID_PREFIX = "GeoAlarm";
-    public static final String ALARMS_FILE_NAME = "alarms.data";
-    public static final String ACTION_SHOW_NOTIFICATION = "WMWIGT.action.SHOW_NOTIFICATION";
+    private static final String GEOFENCE_ID_PREFIX = "GeoAlarm";
+    private static final String ALARMS_FILE_NAME = "alarms.data";
+
     private IBinder binder  = new AlarmServiceBinder();
     private Alarms alarms = new Alarms();
     private GoogleApiClient googleApiClient;
