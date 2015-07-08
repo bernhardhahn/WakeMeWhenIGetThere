@@ -22,10 +22,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLength="30"
+            android:textSize="24dp"
             android:inputType="textCapSentences"
             android:textAlignment="center"
             android:gravity="center_horizontal"
-            android:hint="set an alarm name" />
+            android:hint="@string/alarm_name_placeholder" />
 
         <Space
             android:layout_width="match_parent"

@@ -20,4 +20,5 @@
     <string name="name_input_title">Name</string>
     <string name="radius_input_title">Radius</string>
     <string name="active_input_title">Active</string>
+    <string name="alarm_name_placeholder">set an alarm name</string>
 </resources>
