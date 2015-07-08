@@ -15,9 +15,9 @@ import java.util.List;
  * Created by Bernhard on 2015-06-27.
  */
 public class AlarmsAdapter extends BaseAdapter {
-    private Context context;
-    private Alarms alarms;
-    private List<AlarmStateObserver> observers = new ArrayList<>();
+    private final Context context;
+    private final Alarms alarms;
+    private final List<AlarmStateObserver> observers = new ArrayList<>();
 
     public AlarmsAdapter(Context context, Alarms alarms) {
         this.context = context;
