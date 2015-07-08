@@ -20,4 +20,7 @@
     <string name="notification_text_alarm_count">"%d active alarms"</string>
     <string name="empty_alarm_list_title">No Alarms</string>
     <string name="empty_alarm_list_text">Tap the green button at the bottom to add an alarm.</string>
+    <string name="name_input_title">Name</string>
+    <string name="radius_input_title">Radius</string>
+    <string name="active_input_title">Active</string>
 </resources>

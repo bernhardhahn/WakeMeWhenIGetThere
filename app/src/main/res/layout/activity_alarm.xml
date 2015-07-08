@@ -18,7 +18,7 @@
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Name" />
+            android:text="@string/name_input_title" />
 
         <EditText
             android:id="@+id/alarmName"
@@ -36,7 +36,7 @@
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Radius" />
+            android:text="@string/radius_input_title" />
 
         <nu.bernhard.wakemewhenigetthere.DiscreteSeekBar
             android:id="@+id/alarmRadiusSeekbar"
@@ -53,7 +53,7 @@
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Active" />
+            android:text="@string/active_input_title" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/alarmActive"
