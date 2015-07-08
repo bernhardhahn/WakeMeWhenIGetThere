@@ -109,9 +109,7 @@ public class AlarmActivity extends VisibleActivity
 
     private void setRadiusLabel(Integer radiusInMetres) {
         TextView radiusLabel = (TextView) findViewById(R.id.alarmRadiusLabel);
-        String unit = radiusInMetres >= 1000 ? "km" : "m";
-        int radius = radiusInMetres >= 1000 ? radiusInMetres / 1000 : radiusInMetres;
-        radiusLabel.setText(getString(R.string.radius_title, radius, unit));
+        radiusLabel.setText(StringFormatter.radiusStringFormatter(this, radiusInMetres));
     }
 
     private void readUserInputToAlarm() {
