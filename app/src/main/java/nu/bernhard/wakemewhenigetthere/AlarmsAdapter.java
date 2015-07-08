@@ -53,7 +53,7 @@ public class AlarmsAdapter extends BaseAdapter {
 
         final Alarm alarm = alarms.get(i);
         title.setText(alarm.getName());
-        radius.setText("Radius: " + alarm.getRadius() + " m");
+        radius.setText(StringFormatter.radiusStringFormatter(context, alarm.getRadius()));
         status.setChecked(alarm.isActive());
         final int index = i;
         status.setOnClickListener(new View.OnClickListener() {
