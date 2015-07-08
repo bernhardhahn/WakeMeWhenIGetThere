@@ -10,10 +10,12 @@ import android.os.Message;
 
 
 /**
- * This is the save code as android's IntentService but
+ * This is the same code as android's IntentService but
  * it will return START_STICKY instead of stopping
  * (IntentService calls stopSelf in ServiceHandler:handleMessage)
  * once a message has been handled.
+ *
+ * this is not my code!
  */
 public abstract class NonStoppingIntentService extends Service {
 
