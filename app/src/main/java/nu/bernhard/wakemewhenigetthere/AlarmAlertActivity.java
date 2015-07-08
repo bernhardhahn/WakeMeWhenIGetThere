@@ -73,7 +73,11 @@ public class AlarmAlertActivity extends VisibleActivity {
 
         TextView locationName = (TextView) findViewById(R.id.nowEnteringLocationName);
         locationName.setText(alarm.getName());
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         registerReceiver(broadcastReceiver, new IntentFilter(CLOSE_ACTIVITY),
                 Manifest.permission.PRIVATE, null);
     }
@@ -83,7 +87,6 @@ public class AlarmAlertActivity extends VisibleActivity {
         super.onPause();
         unregisterReceiver(broadcastReceiver);
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
