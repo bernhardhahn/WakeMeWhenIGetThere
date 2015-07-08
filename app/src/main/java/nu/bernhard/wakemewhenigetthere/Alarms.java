@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Alarms {
-    private List<Alarm> alarms = new ArrayList<>();
     private Integer nextId = 1;
-    private List<AlarmsUpdateListener> listeners = new ArrayList<>();
+    private final List<Alarm> alarms = new ArrayList<>();
+    private final List<AlarmsUpdateListener> listeners = new ArrayList<>();
 
     public Alarms() { }
 
