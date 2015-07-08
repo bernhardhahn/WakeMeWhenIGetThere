@@ -112,6 +112,6 @@ public class Alarms {
     }
 
     public interface AlarmsUpdateListener {
-        public void onAlarmsUpdate();
+        void onAlarmsUpdate();
     }
 }
