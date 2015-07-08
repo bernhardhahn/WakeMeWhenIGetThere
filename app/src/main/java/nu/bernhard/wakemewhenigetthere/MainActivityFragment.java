@@ -29,7 +29,7 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
 
     private AlarmService alarmService;
     private boolean serviceBound;
-    private ServiceConnection alarmServiceConnection = new ServiceConnection() {
+    private final ServiceConnection alarmServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
