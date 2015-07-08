@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:focusableInTouchMode="true"
+    tools:showIn="@layout/activity_alarm">
+
+    <EditText
+        android:id="@+id/alarmName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLength="30"
+        android:textSize="24dp"
+        android:inputType="textCapSentences"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:hint="@string/alarm_name_placeholder" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="8dp" />
+
+    <TextView
+        android:id="@+id/alarmRadiusLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/radius_title" />
+
+    <nu.bernhard.wakemewhenigetthere.DiscreteSeekBar
+        android:id="@+id/alarmRadiusSeekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="0.5"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/active_input_title" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/alarmActive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="0.5"
+            android:layout_gravity="center_horizontal">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                card_view:cardBackgroundColor="@color/accent"
+                card_view:cardCornerRadius="2dp"
+                android:layout_margin="6dp"
+                card_view:cardElevation="3dp"
+                android:layout_gravity="center_horizontal">
+
+                <Button
+                    android:id="@+id/saveAlarmButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="36dp"
+                    android:minWidth="88dp"
+                    android:textColor="#deffffff"
+                    android:background="@null"
+                    android:textAllCaps="true"
+                    android:text="@string/save_alarm" />
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
