@@ -23,13 +23,12 @@ public class JSONFileWriter {
         writeStringToFile(context, filename, json.toString());
     }
 
-    private static void writeStringToFile(Context context, String filename, String str)
+    private static void writeStringToFile(Context context, String filename, String jsonStr)
             throws IOException {
         Writer writer = null;
         try {
             OutputStream out = context.openFileOutput(filename, Context.MODE_PRIVATE);
             writer = new OutputStreamWriter(out);
-            String jsonStr = str;
             writer.write(jsonStr);
         } finally {
             if (writer != null)
