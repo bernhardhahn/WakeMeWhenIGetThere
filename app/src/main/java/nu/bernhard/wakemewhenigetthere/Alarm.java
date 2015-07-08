@@ -9,10 +9,10 @@ import org.json.JSONObject;
 
 public class Alarm implements Parcelable {
 
-    public static final double DEFAULT_LON = 58d;
-    public static final double DEFAULT_LAT = 12d;
-    public static final int DEFAULT_RADIUS = 250;
-    public static final boolean DEFAULT_ACTIVE = true;
+    private static final double DEFAULT_LON = 58d;
+    private static final double DEFAULT_LAT = 12d;
+    private static final int DEFAULT_RADIUS = 250;
+    private static final boolean DEFAULT_ACTIVE = true;
     private static final String JSON_ID = "id";
     private static final String JSON_NAME = "name";
     private static final String JSON_LON = "lon";
@@ -126,6 +126,7 @@ public class Alarm implements Parcelable {
     public void setId(Integer id) {
         this.id = id;
     }
+
     protected Alarm(Parcel in) {
         id = in.readByte() == 0x00 ? null : in.readInt();
         name = in.readString();
