@@ -54,8 +54,7 @@ public class AlarmAlertActivity extends VisibleActivity {
         } else {
             Intent intent = getIntent();
             if (intent.hasExtra(AlarmAlertService.ALARM_KEY)) {
-                Alarm alarm = intent.getParcelableExtra(AlarmAlertService.ALARM_KEY);
-                this.alarm = alarm;
+                this.alarm = intent.getParcelableExtra(AlarmAlertService.ALARM_KEY);
             } else {
                 Log.d(TAG, "ShowAlarmActivity launched without Alarm");
                 finish();

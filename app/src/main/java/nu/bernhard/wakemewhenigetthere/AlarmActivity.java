@@ -25,7 +25,6 @@ public class AlarmActivity extends VisibleActivity
     public static final String ALARM_KEY = "alarm";
     private static final String TAG = AlarmActivity.class.getName();
 
-    private Button saveAlarmButton;
     private EditText alarmNameInput;
     private SwitchCompat alarmIsActiveInput;
     private DiscreteSeekBar alarmRadiusSeekBar;
@@ -56,7 +55,7 @@ public class AlarmActivity extends VisibleActivity
             this.alarm = new Alarm();
         }
 
-        saveAlarmButton = (Button) findViewById(R.id.saveAlarmButton);
+        Button saveAlarmButton = (Button) findViewById(R.id.saveAlarmButton);
         alarmNameInput = (EditText) findViewById(R.id.alarmName);
         alarmIsActiveInput = (SwitchCompat) findViewById(R.id.alarmActive);
         alarmRadiusSeekBar = (DiscreteSeekBar) findViewById(R.id.alarmRadiusSeekbar);
