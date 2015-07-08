@@ -75,7 +75,7 @@ public class AlarmsAdapter extends BaseAdapter {
         observers.remove(observer);
     }
 
-    public void triggerAlarmStateChange(Alarm alarm, int index) {
+    private void triggerAlarmStateChange(Alarm alarm, int index) {
         for (AlarmStateObserver observer : observers) {
             observer.onAlarmStateChange(alarm, index);
         }
