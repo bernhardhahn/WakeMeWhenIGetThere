@@ -34,10 +34,10 @@
         <activity
             android:name=".AlarmActivity">
         </activity>
-        <!-- alert activity should not be rotated -->
         <activity
             android:name=".AlarmAlertActivity"
-            android:theme="@style/FullScreen">
+            android:theme="@style/FullScreen"
+            android:noHistory="true">
         </activity>
 
         <service android:name=".GeofenceService" />
