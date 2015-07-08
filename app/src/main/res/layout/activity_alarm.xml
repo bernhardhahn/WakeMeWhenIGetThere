@@ -22,7 +22,7 @@
 
         <EditText
             android:id="@+id/alarmName"
-            android:layout_width="wrap_content"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:maxLength="30"
@@ -41,7 +41,7 @@
 
         <nu.bernhard.wakemewhenigetthere.DiscreteSeekBar
             android:id="@+id/alarmRadiusSeekbar"
-            android:layout_width="match_parent"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"/>
     </LinearLayout>
@@ -58,7 +58,7 @@
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/alarmActive"
-            android:layout_width="wrap_content"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="0.5" />
     </LinearLayout>
