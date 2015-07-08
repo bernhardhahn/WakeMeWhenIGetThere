@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import  android.support.v7.widget.SwitchCompat;
@@ -16,7 +17,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -59,6 +61,13 @@ public class AlarmActivity extends VisibleActivity
         Button saveAlarmButton = (Button) findViewById(R.id.saveAlarmButton);
         alarmNameInput = (EditText) findViewById(R.id.alarmName);
         alarmIsActiveInput = (SwitchCompat) findViewById(R.id.alarmActive);
+        alarmIsActiveInput.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                alarm.setActive(b);
+                setMapMarkerFromAlarm();
+            }
+        });
         alarmRadiusSeekBar = (DiscreteSeekBar) findViewById(R.id.alarmRadiusSeekbar);
         alarmRadiusSeekBar.setValue(alarm.getRadius());
         alarmRadiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -143,28 +152,25 @@ public class AlarmActivity extends VisibleActivity
     }
 
     private LatLng setMapMarkerFromAlarm() {
-        clearMapMarkers();
         LatLng position = new LatLng(alarm.getLat(), alarm.getLon());
+        if (map == null) return position;
+
+        clearMapMarkers();
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(position);
         map.addMarker(markerOptions);
-        CircleOptions circleOptions = getCircleOptions(position, alarm.getRadius());
-        map.addCircle(circleOptions);
+        Integer imageOverlayResourceId = alarm.isActive() ?
+                R.drawable.map_circle_active :
+                R.drawable.map_circle_inactive;
+        map.addGroundOverlay(new GroundOverlayOptions()
+                .image(BitmapDescriptorFactory.fromResource(imageOverlayResourceId))
+                .anchor(0.5f, 0.5f) //center of image
+                .position(position, alarm.getRadius() * 2));
         return position;
     }
 
     private void clearMapMarkers() {
         map.clear();
-    }
-
-    private CircleOptions getCircleOptions(LatLng position, Integer radius) {
-        CircleOptions circleOptions = new CircleOptions();
-        circleOptions.center(position);
-        circleOptions.radius(radius);
-        circleOptions.fillColor(0x447EC386);
-        circleOptions.strokeWidth(4f);
-        circleOptions.strokeColor(0xFF7EC386);
-        return circleOptions;
     }
 
     @Override
