@@ -15,11 +15,13 @@ import android.widget.TextView;
 
 public class AlarmAlertActivity extends VisibleActivity {
 
-    private static final String TAG = AlarmAlertActivity.class.getName();
     public static final String CLOSE_ACTIVITY = "CLOSE_ACTIVITY";
+
+    private static final String TAG = AlarmAlertActivity.class.getName();
     private static final String ALARM_KEY = "ALARM";
+
     private Alarm alarm;
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             AlarmAlertActivity.this.finish();
