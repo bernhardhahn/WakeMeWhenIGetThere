@@ -26,9 +26,9 @@ public class AlarmActivity extends VisibleActivity
     private static final String TAG = AlarmActivity.class.getName();
 
     private Button saveAlarmButton;
-    private EditText newAlarmNameInput;
-    private SwitchCompat newAlarmActiveInput;
-    private DiscreteSeekBar newAlarmRadiusSeekBar;
+    private EditText alarmNameInput;
+    private SwitchCompat alarmIsActiveInput;
+    private DiscreteSeekBar alarmRadiusSeekBar;
     private Alarm alarm;
     private GoogleMap map;
     private MapView mapView;
@@ -57,11 +57,11 @@ public class AlarmActivity extends VisibleActivity
         }
 
         saveAlarmButton = (Button) findViewById(R.id.saveAlarmButton);
-        newAlarmNameInput = (EditText) findViewById(R.id.newAlarmName);
-        newAlarmActiveInput = (SwitchCompat) findViewById(R.id.newAlarmActive);
-        newAlarmRadiusSeekBar = (DiscreteSeekBar) findViewById(R.id.newAlarmRadiusSeekbar);
-        newAlarmRadiusSeekBar.setValue(alarm.getRadius());
-        newAlarmRadiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        alarmNameInput = (EditText) findViewById(R.id.alarmName);
+        alarmIsActiveInput = (SwitchCompat) findViewById(R.id.alarmActive);
+        alarmRadiusSeekBar = (DiscreteSeekBar) findViewById(R.id.alarmRadiusSeekbar);
+        alarmRadiusSeekBar.setValue(alarm.getRadius());
+        alarmRadiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 Integer radius = ((DiscreteSeekBar) seekBar).getValue();
@@ -94,24 +94,22 @@ public class AlarmActivity extends VisibleActivity
         });
 
         populateViewsFromAlarm();
-
     }
 
     private void readUserInputToAlarm() {
-        String alarmName = newAlarmNameInput.getText().toString();
-        Integer radius = newAlarmRadiusSeekBar.getValue();
-        Boolean active = newAlarmActiveInput.isChecked();
+        String alarmName = alarmNameInput.getText().toString();
+        Integer radius = alarmRadiusSeekBar.getValue();
+        Boolean active = alarmIsActiveInput.isChecked();
         alarm.setName(alarmName);
         alarm.setRadius(radius);
         alarm.setActive(active);
     }
 
     private void populateViewsFromAlarm() {
-        newAlarmNameInput.setText(alarm.getName());
-        newAlarmRadiusSeekBar.setValue(alarm.getRadius());
-        newAlarmActiveInput.setChecked(alarm.isActive());
+        alarmNameInput.setText(alarm.getName());
+        alarmRadiusSeekBar.setValue(alarm.getRadius());
+        alarmIsActiveInput.setChecked(alarm.isActive());
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
