@@ -12,7 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Bernhard on 2015-06-27.
+ * Adapter class to display Alarms in a ListView
+ * Each row item view has a switch to toggle the active state
+ * of the Alarm. Users can attach observers (listeners)
+ * by calling registerAlarmStateObserver() with an implementation
+ * of AlarmStateObserver to receive notifications when an
+ * Alarm's active state it toggled.
+ *
  */
 public class AlarmsAdapter extends BaseAdapter {
     private final Context context;
@@ -43,7 +49,8 @@ public class AlarmsAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.alarm_list_item, viewGroup, false);
         }
 
@@ -67,10 +74,21 @@ public class AlarmsAdapter extends BaseAdapter {
         return view;
     }
 
+    /**
+     * Register an observer to receive notifications when
+     * an alarm's active state is changed.
+     *
+     * @param observer to receive notifications
+     */
     public void registerAlarmStateObserver(AlarmStateObserver observer) {
         observers.add(observer);
     }
 
+    /**
+     * Unregister an observer
+     *
+     * @param observer to remove
+     */
     public void unregisterAlarmStateObserver(AlarmStateObserver observer) {
         observers.remove(observer);
     }
@@ -81,6 +99,10 @@ public class AlarmsAdapter extends BaseAdapter {
         }
     }
 
+    /**
+     * Interface to receive update on Alarm's active state
+     * changes.
+     */
     public interface AlarmStateObserver {
         void onAlarmStateChange(Alarm alarm, int index);
     }
