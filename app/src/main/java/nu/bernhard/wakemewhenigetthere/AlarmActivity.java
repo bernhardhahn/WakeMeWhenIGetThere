@@ -23,17 +23,34 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
+/**
+ * The AlarmActivity shows a single Alarm to the user
+ * and lets the user change the settings of the Alarm.
+ *
+ * The Activity should be launched with an Intent containing
+ * an Alarm set with the "ALARM_KEY"
+ * If the Activity is launched without an Alarm a new Alarm
+ * will be created.
+ *
+ * When the user presses the "Save" button the activity will
+ * return a updated version of the alarm as a Result with
+ * the key "ALARM_KEY"
+ */
 public class AlarmActivity extends VisibleActivity
         implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
-    public static final String ALARM_KEY = "alarm";
+
+    // TAG for logging
     private static final String TAG = AlarmActivity.class.getName();
 
+    // Key used in Intents and Parcels to indicate an Alarm
+    public static final String ALARM_KEY = "alarm";
+
+    private Alarm alarm;
     private EditText alarmNameInput;
     private SwitchCompat alarmIsActiveInput;
     private DiscreteSeekBar alarmRadiusSeekBar;
-    private Alarm alarm;
-    private GoogleMap map;
     private MapView mapView;
+    private GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,22 +61,52 @@ public class AlarmActivity extends VisibleActivity
         if (savedInstanceState != null) {
             this.alarm = savedInstanceState.getParcelable(ALARM_KEY);
             //We must redirect saveInstanceState to mapView
-            //but there is a bug in google map, and it will
+            //but there is a bug in google maps, and it will
             //try to unbundle our parcelable but will fail
             //since it does not have the classloader.
-            //That's why we must remove our parcelable.
+            //Therefore s why we must remove our parcelable object
+            //to avoid google maps from throwing an exception.
             savedInstanceState.remove(ALARM_KEY);
         } else if (intent.hasExtra(ALARM_KEY)) {
-            Log.d(TAG, "has extra");
             this.alarm = intent.getParcelableExtra(ALARM_KEY);
-            Log.d(TAG, "Alarm: " + alarm.getName());
+            Log.d(TAG, "Alarm Activity created with Alarm: " + alarm.getName());
         } else {
-            Log.d(TAG, "no extra :((");
             this.alarm = new Alarm();
         }
 
-        Button saveAlarmButton = (Button) findViewById(R.id.saveAlarmButton);
         alarmNameInput = (EditText) findViewById(R.id.alarmName);
+        setupIsAlarmActiveInput();
+        setupAlarmRadiusSeekBar();
+        setupMapView(savedInstanceState);
+        setCallbackForSaveButton();
+
+        populateViewsFromAlarm();
+    }
+
+    /**
+     * onMapReady will be called when google maps has loaded
+     *
+     * @param googleMap
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.map = googleMap;
+        setMapUiControls();
+        LatLng position = setMapMarkerFromAlarm();
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
+        map.setMyLocationEnabled(true);
+        map.setOnMapClickListener(this);
+    }
+
+    private void setMapUiControls() {
+        UiSettings uiSettings = map.getUiSettings();
+        uiSettings.setMapToolbarEnabled(false);
+        uiSettings.setCompassEnabled(false);
+        uiSettings.setMyLocationButtonEnabled(true);
+        uiSettings.setZoomControlsEnabled(true);
+    }
+
+    private void setupIsAlarmActiveInput() {
         alarmIsActiveInput = (SwitchCompat) findViewById(R.id.alarmActive);
         alarmIsActiveInput.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -68,6 +115,9 @@ public class AlarmActivity extends VisibleActivity
                 setMapMarkerFromAlarm();
             }
         });
+    }
+
+    private void setupAlarmRadiusSeekBar() {
         alarmRadiusSeekBar = (DiscreteSeekBar) findViewById(R.id.alarmRadiusSeekbar);
         alarmRadiusSeekBar.setValue(alarm.getRadius());
         alarmRadiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -88,10 +138,17 @@ public class AlarmActivity extends VisibleActivity
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+        setRadiusLabel(alarm.getRadius());
+    }
+
+    private void setupMapView(Bundle savedInstanceState) {
         mapView = (MapView) findViewById(R.id.map);
         mapView.getMapAsync(this);
         mapView.onCreate(savedInstanceState);
+    }
 
+    private void setCallbackForSaveButton() {
+        Button saveAlarmButton = (Button) findViewById(R.id.saveAlarmButton);
         saveAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,9 +159,6 @@ public class AlarmActivity extends VisibleActivity
                 finish();
             }
         });
-
-        populateViewsFromAlarm();
-        setRadiusLabel(alarm.getRadius());
     }
 
     private void setRadiusLabel(Integer radiusInMetres) {
@@ -121,42 +175,28 @@ public class AlarmActivity extends VisibleActivity
         alarm.setActive(active);
     }
 
+    /**
+     * Read values from Alarm and display in corresponding Views.
+     */
     private void populateViewsFromAlarm() {
         alarmNameInput.setText(alarm.getName());
         alarmRadiusSeekBar.setValue(alarm.getRadius());
         alarmIsActiveInput.setChecked(alarm.isActive());
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        mapView.onSaveInstanceState(outState);
-        readUserInputToAlarm();
-        outState.putParcelable(ALARM_KEY, alarm);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.map = googleMap;
-        UiSettings uiSettings = map.getUiSettings();
-        uiSettings.setMapToolbarEnabled(false);
-        uiSettings.setCompassEnabled(false);
-        uiSettings.setMyLocationButtonEnabled(true);
-        uiSettings.setZoomControlsEnabled(true);
-        LatLng position = setMapMarkerFromAlarm();
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
-        map.setMyLocationEnabled(true);
-        map.setOnMapClickListener(this);
-    }
-
     private LatLng setMapMarkerFromAlarm() {
-        LatLng position = new LatLng(alarm.getLat(), alarm.getLon());
+        LatLng position = getLatLngFromAlarm();
+
+        //if map is not yet ready, don't try to set markers.
         if (map == null) return position;
 
         clearMapMarkers();
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(position);
-        map.addMarker(markerOptions);
+        addMarkerToMap(position);
+        addRadiusCircleToMap(position);
+        return position;
+    }
+
+    private void addRadiusCircleToMap(LatLng position) {
         Integer imageOverlayResourceId = alarm.isActive() ?
                 R.drawable.map_circle_active :
                 R.drawable.map_circle_inactive;
@@ -164,7 +204,16 @@ public class AlarmActivity extends VisibleActivity
                 .image(BitmapDescriptorFactory.fromResource(imageOverlayResourceId))
                 .anchor(0.5f, 0.5f) //center of image
                 .position(position, alarm.getRadius() * 2));
-        return position;
+    }
+
+    private void addMarkerToMap(LatLng position) {
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(position);
+        map.addMarker(markerOptions);
+    }
+
+    private LatLng getLatLngFromAlarm() {
+        return new LatLng(alarm.getLat(), alarm.getLon());
     }
 
     private void clearMapMarkers() {
@@ -172,26 +221,39 @@ public class AlarmActivity extends VisibleActivity
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //onSaveInstanceState must be redirected to MapView
+        mapView.onSaveInstanceState(outState);
+        readUserInputToAlarm();
+        outState.putParcelable(ALARM_KEY, alarm);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        // onDestroy must be redirected to MapView
         mapView.onDestroy();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        // onResume must be redirected to MapView
         mapView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        // onPause must be redirected to MapView
         mapView.onPause();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
+        // onLowMemory must be redirected to MapView
         mapView.onLowMemory();
     }
 
