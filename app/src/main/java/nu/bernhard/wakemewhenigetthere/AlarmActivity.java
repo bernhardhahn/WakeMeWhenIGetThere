@@ -92,7 +92,8 @@ public class AlarmActivity extends VisibleActivity
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
         setMapUiControls();
-        LatLng position = setMapMarkerFromAlarm();
+        setMapMarkerFromAlarm();
+        LatLng position = getLatLngFromAlarm();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
         map.setMyLocationEnabled(true);
         map.setOnMapClickListener(this);
@@ -184,16 +185,14 @@ public class AlarmActivity extends VisibleActivity
         alarmIsActiveInput.setChecked(alarm.isActive());
     }
 
-    private LatLng setMapMarkerFromAlarm() {
-        LatLng position = getLatLngFromAlarm();
-
+    private void setMapMarkerFromAlarm() {
         //if map is not yet ready, don't try to set markers.
-        if (map == null) return position;
+        if (map == null) return ;
 
+        LatLng position = getLatLngFromAlarm();
         clearMapMarkers();
         addMarkerToMap(position);
         addRadiusCircleToMap(position);
-        return position;
     }
 
     private void addRadiusCircleToMap(LatLng position) {
