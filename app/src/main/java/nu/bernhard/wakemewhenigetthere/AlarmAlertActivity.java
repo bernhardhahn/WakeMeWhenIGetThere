@@ -13,14 +13,27 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+/**
+ * AlarmAlertActivity is the visible par of AlarmAlertService when a Alarm
+ * is triggered.
+ *
+ * AlarmAlertActivity has no other functionality then calling AlarmAlertService
+ * with Action STOP_ALARM when the user taps the "dismiss alarm" button.
+ *
+ * AlarmAlertActivity will be closed down by a broadcast from AlarmAlertService.
+ */
 public class AlarmAlertActivity extends VisibleActivity {
 
+    //Key used as intent-filter to close activity with broadcast
     public static final String CLOSE_ACTIVITY = "CLOSE_ACTIVITY";
 
+    //TAG for logging
     private static final String TAG = AlarmAlertActivity.class.getName();
     private static final String ALARM_KEY = "ALARM";
 
     private Alarm alarm;
+
+    //BroadcastReceiver to shut down AlarmAlertActivity
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -61,6 +74,11 @@ public class AlarmAlertActivity extends VisibleActivity {
             }
         }
 
+        setDismissButtonCallback();
+        setAlarmNameView();
+    }
+
+    private void setDismissButtonCallback() {
         Button dismissButton = (Button) findViewById(R.id.dismissAlarmButton);
         dismissButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +89,9 @@ public class AlarmAlertActivity extends VisibleActivity {
 
             }
         });
+    }
 
+    private void setAlarmNameView() {
         TextView locationName = (TextView) findViewById(R.id.nowEnteringLocationName);
         locationName.setText(alarm.getName());
     }
