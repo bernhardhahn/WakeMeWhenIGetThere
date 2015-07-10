@@ -41,20 +41,6 @@ public class Alarm implements Parcelable {
         this.setActive(active);
     }
 
-    public Alarm(String jsonString) {
-        try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            setId(jsonObject.getInt(JSON_ID));
-            setName(jsonObject.getString(JSON_NAME));
-            setLon(jsonObject.getDouble(JSON_LON));
-            setLat(jsonObject.getDouble(JSON_LAT));
-            setRadius(jsonObject.getInt(JSON_RADIUS));
-            setActive(jsonObject.getBoolean(JSON_ACTIVE));
-        } catch (JSONException e) {
-            Log.d("Alarm", "Failed to parse JSON: " + jsonString);
-        }
-    }
-
     public Alarm(JSONObject jsonObject) {
         try {
             setId(jsonObject.getInt(JSON_ID));
