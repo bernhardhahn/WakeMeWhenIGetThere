@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * AlarmService is the main Service of the application.
+ */
 public class AlarmService extends NonStoppingIntentService implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -42,17 +45,36 @@ public class AlarmService extends NonStoppingIntentService implements
     private static final String EXTRA_GEOFENCE_ID = "WMWIGT.extra.GEOFENCE_ID";
     private static final String GEOFENCE_ID_PREFIX = "GeoAlarm";
     private static final String ALARMS_FILE_NAME = "alarms.data";
+    private static final String NOTIFICATION_KEY = "NOTIFICATION";
 
     private IBinder binder  = new AlarmServiceBinder();
     private Alarms alarms = new Alarms();
     private GoogleApiClient googleApiClient;
 
+    /**
+     * Tell AlarmService to update notification
+     * Calling this static method well start AlarmService with action
+     * ACTION_UPDATE_NOTIFICATION
+     *
+     * Notifications are only shown when no Activities are visible.
+     * This method is called when Activities are created or destroyed.
+     *
+     * @param context
+     */
     public static void updateNotification(Context context) {
         Intent intent = new Intent(context, AlarmService.class);
         intent.setAction(ACTION_UPDATE_NOTIFICATION);
         context.startService(intent);
     }
 
+    /**
+     * Tell AlarmService that the user has entered a Geofence
+     * Calling this static method well start AlarmService with action
+     * ACTION_UPDATE_GEOFENCE
+     *
+     * @param context
+     * @param geofenceRequestId id of the geofence entered
+     */
     public static void enterGeofence(Context context, String geofenceRequestId) {
         Intent intent = new Intent(context, AlarmService.class);
         intent.setAction(ACTION_ENTER_GEOFENCE);
@@ -87,23 +109,22 @@ public class AlarmService extends NonStoppingIntentService implements
         return alarms;
     }
 
+    /**
+     * Callback triggered when Alarms is updated
+     * When Alarms are updated Geofences must be
+     * updated.
+     */
     @Override
     public void onAlarmsUpdate() {
         updateGeofences();
         saveAlarms();
     }
 
-    public class AlarmServiceBinder extends Binder {
-        AlarmService getService() {
-            return AlarmService.this;
-        }
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
-
+    /**
+     * Handle intents sent to AlarmService with startService()
+     *
+     * @param intent The value passed to NonStoppingIntentService
+     */
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -117,6 +138,12 @@ public class AlarmService extends NonStoppingIntentService implements
         }
     }
 
+    /**
+     * Handle enter geofence action
+     * This will start the AlarmAlertService
+     *
+     * @param geofenceId id of geofence entered
+     */
     private void handleActionEnterGeofence(String geofenceId) {
         try {
             Log.d(TAG, "handleActionEnterGeofence for geofenceId: " + geofenceId);
@@ -134,17 +161,78 @@ public class AlarmService extends NonStoppingIntentService implements
         }
     }
 
+    /**
+     * Map an id received from GeofenceService to an alarm
+     * @param geofenceId
+     * @return  the Alarm matching the geofence id
+     * @throws Exception
+     */
     private Alarm getAlarmFromGeofenceId(String geofenceId) throws Exception {
         Integer id = Integer.parseInt(geofenceId.replace(GEOFENCE_ID_PREFIX, ""));
         return alarms.getById(id);
     }
 
+    /**
+     * Handle update notification action
+     *
+     * This will show a notification if active alarms
+     * are available and no activity is visible
+     *
+     */
     private void handleActionUpdateNotification() {
         if (!alarms.hasActiveAlarms()) {
             Log.d(TAG, "no active alarms... don't show notification");
             stopForeground(true);
             return;
         }
+
+        Notification notification = createNotification();
+
+        Intent broadcastIntent = new Intent(ACTION_SHOW_NOTIFICATION);
+        broadcastIntent.putExtra(NOTIFICATION_KEY, notification);
+        sendOrderedBroadcast(broadcastIntent, null,
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Log.d(TAG, "broadcastReceiver got message: " + intent.getAction());
+                        Log.d(TAG, "broadcastReceiver result code: " + getResultCode());
+                        //if no activity has canceled the broadcast go ahead and show the
+                        //notification.
+                        if (getResultCode() == Activity.RESULT_OK) {
+                            Notification notification = intent.getParcelableExtra(NOTIFICATION_KEY);
+                            startForeground(1, notification);
+                        } else {
+                            stopForeground(true);
+                        }
+                    }
+                }, null, Activity.RESULT_OK, null, null);
+    }
+
+    /**
+     * Create a notification to show which Alarms are active
+     * @return a Notification showing active Alarms
+     */
+    private Notification createNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+        builder.setContentTitle(getString(R.string.notification_content_title));
+        builder.setContentText(createNotificationString());
+        builder.setSmallIcon(R.drawable.notification_icon);
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.notification_large_icon);
+        builder.setLargeIcon(largeIcon);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+        builder.setContentIntent(pendingIntent);
+        return builder.build();
+    }
+
+    /**
+     * Returns a string to show in the notification field
+     * The string contains either the name of the active alarm
+     * or if more than one alarm is active, the number of
+     * active alarms
+     * @return message
+     */
+    private String createNotificationString() {
         String contentText = "";
         int activeAlarmsCount = alarms.getActiveAlarmCount();
         if (activeAlarmsCount > 1) {
@@ -158,59 +246,39 @@ public class AlarmService extends NonStoppingIntentService implements
                 }
             }
         }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-        builder.setContentTitle(getString(R.string.notification_content_title));
-        builder.setContentText(contentText);
-        builder.setSmallIcon(R.drawable.notification_icon);
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.notification_large_icon);
-        builder.setLargeIcon(largeIcon);
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-        builder.setContentIntent(pendingIntent);
-        Notification notification = builder.build();
-
-
-        Intent broadcastIntent = new Intent(ACTION_SHOW_NOTIFICATION);
-        broadcastIntent.putExtra("NOTIFICATION", notification);
-        sendOrderedBroadcast(broadcastIntent, null,
-                new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        Log.d(TAG, "broadcastReceiver got message: " + intent.getAction());
-                        Log.d(TAG, "broadcastReceiver result code: " + getResultCode());
-                        //if no activity has canceled the broadcast go ahead and show the
-                        //notification.
-                        if (getResultCode() == Activity.RESULT_OK) {
-                            Notification notification = intent.getParcelableExtra("NOTIFICATION");
-                            startForeground(1, notification);
-                        } else {
-                            stopForeground(true);
-                        }
-                    }
-                }, null, Activity.RESULT_OK, null, null);
+        return contentText;
     }
 
+    /**
+     * Triggered when connection to google api is set up
+     * @param connectionHint
+     */
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.i(TAG, "Connected to GoogleApiClient");
+        Log.d(TAG, "Connected to GoogleApiClient");
         updateGeofences();
     }
 
+    /**
+     * Triggered if connection to google api fails
+     * @param result
+     */
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-        // onConnectionFailed.
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+        Log.d(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
 
     @Override
     public void onConnectionSuspended(int cause) {
         // The connection to Google Play services was lost for some reason.
-        Log.i(TAG, "Connection suspended");
-        // onConnected() will be called again automatically when the service reconnects
+        Log.d(TAG, "Connection suspended");
     }
 
+    /**
+     * Update all geofences
+     * This will add geofences for each active alarms.
+     * Deactivated alarms will be removed.
+     */
     private void updateGeofences() {
         if (!googleApiClient.isConnected()) {
             //TODO: raise error
@@ -230,25 +298,26 @@ public class AlarmService extends NonStoppingIntentService implements
                 LocationServices.GeofencingApi.removeGeofences(
                         googleApiClient,
                         getGeofencePendingIntent()
-                ).setResultCallback(this);
+                ).setResultCallback(this); // Result processed in onResult().
             }
         } catch (SecurityException securityException) {
-            Log.e(TAG, "Invalid location permission. " +
-                    "You need to use ACCESS_FINE_LOCATION with geofences", securityException);
+            Log.e(TAG, "Error updating geofences", securityException);
         }
     }
 
+    /**
+     * @return a GeofencingRequest for all active alarms
+     */
     private GeofencingRequest getGeofencingRequest() {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-
-        // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
-        // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
-        // is already inside that geofence.
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
         builder.addGeofences(getLocations());
         return builder.build();
     }
 
+    /**
+     * @return  a list of Geofences corresponding to all active alarms
+     */
     private List<Geofence> getLocations() {
         List<Geofence> locations = new ArrayList<>();
         for (Alarm alarm : alarms.getAll()) {
@@ -265,15 +334,24 @@ public class AlarmService extends NonStoppingIntentService implements
         return locations;
     }
 
+    /**
+     * @return pending intent for GeofenceService
+     */
     private PendingIntent getGeofencePendingIntent() {
         Intent intent = new Intent(getApplicationContext(),
                 GeofenceService.class);
-        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
-        // addGeofences() and removeGeofences().
+        // FLAG_UPDATE_CURRENT will make getService return the same
+        // PendingIntent next time geGeofencePendingIntent is called
+        // this is great for updating geofences.
         return PendingIntent.getService(getApplicationContext(),
                 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    /**
+     * Geofence status result receiver
+     *
+     * @param status status of Geofence result
+     */
     @Override
     public void onResult(Status status) {
         if (status.isSuccess()) {
@@ -286,6 +364,20 @@ public class AlarmService extends NonStoppingIntentService implements
         }
     }
 
+    public class AlarmServiceBinder extends Binder {
+        AlarmService getService() {
+            return AlarmService.this;
+        }
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    /**
+     * Save alarms to persistent storage
+     */
     private void saveAlarms() {
         Log.d(TAG, "saveAlarms");
         try {
@@ -296,6 +388,9 @@ public class AlarmService extends NonStoppingIntentService implements
         }
     }
 
+    /**
+     * Load alarms from persistent storage
+     */
     private void loadAlarms() {
         Log.d(TAG, "loadAlarms");
         try {
@@ -307,5 +402,7 @@ public class AlarmService extends NonStoppingIntentService implements
             alarms = new Alarms();
         }
     }
+
+
 
 }
