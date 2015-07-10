@@ -7,6 +7,16 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * An Alarm has a name, a location (lat/lon) and a radius in metres
+ * An Alarm can be active.
+ * Each Alarm contains an id which should be set to a unique value.
+ * An Alarm can be exported to e JSONObject by calling toJSON and
+ * can be created from a JSONObject using to appropriate constructor.
+ * This is used to store Alarms in persistent storage.
+ *
+ * Alarm implements Parcelable
+ */
 public class Alarm implements Parcelable {
 
     private static final double DEFAULT_LON = 18.057345d;
@@ -26,13 +36,35 @@ public class Alarm implements Parcelable {
     private Integer radius = DEFAULT_RADIUS;
     private Boolean active = DEFAULT_ACTIVE;
 
+
+    /**
+     * Empty constructor needed for Parcelable objects
+     */
     public Alarm() { }
 
+
+    /**
+     * Constructor for setting all private fields
+     * @param id    id of the alarm
+     * @param name  name of the alarm
+     * @param lon   longitude coordinate of the alarm
+     * @param lat   latitude coordinate of the alarm
+     * @param radius radius of the alarm in metres
+     * @param active boolean indicating if the alarm is active of not
+     */
     public Alarm(Integer id, String name, Double lon, Double lat, Integer radius, Boolean active) {
         this(name, lon, lat, radius, active);
         this.id = id;
     }
 
+    /**
+     * Constructor for setting all private fields except id
+     * @param name  name of the alarm
+     * @param lon   longitude coordinate of the alarm
+     * @param lat   latitude coordinate of the alarm
+     * @param radius radius of the alarm in metres
+     * @param active boolean indicating if the alarm is active of not
+     */
     public Alarm(String name, Double lon, Double lat, Integer radius, Boolean active) {
         this.setName(name);
         this.setLon(lon);
@@ -41,6 +73,14 @@ public class Alarm implements Parcelable {
         this.setActive(active);
     }
 
+
+    /**
+     * Constructor for setting all fields from a JSONObject
+     * If the JSONObject is not well formatted and contains
+     * an Alarm object (as created by toJSON()) all fields
+     * will not be set. No exception will be thrown!
+     * @param jsonObject JSONObject containing all fields of an Alarm
+     */
     public Alarm(JSONObject jsonObject) {
         try {
             setId(jsonObject.getInt(JSON_ID));
@@ -54,6 +94,10 @@ public class Alarm implements Parcelable {
         }
     }
 
+    /**
+     * @return A JSONObject containing all fields of the Alarm
+     * @throws JSONException
+     */
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
         json.put(JSON_ID , getId());
@@ -113,6 +157,11 @@ public class Alarm implements Parcelable {
         this.id = id;
     }
 
+    /**
+     * Auto-generated!
+     * Constructor for Parcel objects
+     * @param in Parcel object containing an Alarm
+     */
     protected Alarm(Parcel in) {
         id = in.readByte() == 0x00 ? null : in.readInt();
         name = in.readString();
@@ -123,11 +172,21 @@ public class Alarm implements Parcelable {
         active = activeVal == 0x02 ? null : activeVal != 0x00;
     }
 
+    /**
+     * Auto-generated!
+     * @return
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * Auto-generated!
+     * Write Alarm to Parcel
+     * @param dest
+     * @param flags
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         if (id == null) {
@@ -162,6 +221,9 @@ public class Alarm implements Parcelable {
         }
     }
 
+    /**
+     * Auto-generated!
+     */
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<Alarm> CREATOR = new Parcelable.Creator<Alarm>() {
         @Override
