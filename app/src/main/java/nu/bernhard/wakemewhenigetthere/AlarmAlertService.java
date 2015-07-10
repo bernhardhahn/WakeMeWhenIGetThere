@@ -16,15 +16,33 @@ import android.util.Log;
 
 import java.io.IOException;
 
+/**
+ * AlarmAlertService is a Service to run audio and vibrate when an
+ * Alarm is triggered.
+ *
+ * AlarmAlertService should be started by an Intent with the
+ * Action START_ALARM. The Intent should also contain an Alarm
+ * under the key ALARM_KEY.
+ *
+ * Once AlarmAlertService is started it will launch AlarmAlertActivity
+ * and show a Notification. Both of these can send an Intent
+ * with the Action STOP_ALARM. This will cause AlarmAlertService
+ * to stop the Alarm and shut down the Notification and AlarmAlertActivity.
+ *
+ */
 public class AlarmAlertService extends NonStoppingIntentService {
 
+    //Key used as Action to start playing an Alarm
     public static final String START_ALARM = "START_ALARM";
+    //Key used as Action to stop playing an Alarm
     public static final String STOP_ALARM = "STOP_ALARM";
+    //Key used to indicate Alarm in Intent when starting AlarmAlertService
     public static final String ALARM_KEY = "alarm";
 
-    private static final long[] vibratePattern = new long[] { 500, 500 };
+    //TAG for logging
     private static final String TAG = AlarmAlertService.class.getName();
 
+    private static final long[] vibratePattern = new long[] { 500, 500 };
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
     private int systemAlarmVolumeSetting;
@@ -39,6 +57,7 @@ public class AlarmAlertService extends NonStoppingIntentService {
         if (intent != null && intent.getAction() != null) {
             Log.d(TAG, "onHandleIntent: action: " + intent.getAction());
 
+            //Handle START action
             if (intent.getAction().equals(START_ALARM)) {
                 if (intent.hasExtra(ALARM_KEY)) {
                     Alarm alarm = intent.getParcelableExtra(ALARM_KEY);
@@ -51,6 +70,7 @@ public class AlarmAlertService extends NonStoppingIntentService {
                 }
             }
 
+            //Handle STOP action
             if (intent.getAction().equals(STOP_ALARM)) {
                 stopAlarm();
                 hideNotification();
@@ -60,20 +80,11 @@ public class AlarmAlertService extends NonStoppingIntentService {
         }
     }
 
-    private void broadcastActivityClose() {
-        sendBroadcast(new Intent(AlarmAlertActivity.CLOSE_ACTIVITY),
-                Manifest.permission.PRIVATE);
-    }
-
     private void showActivity(Alarm alarm) {
         Intent alarmAlertActivityIntent = new Intent(getApplicationContext(), AlarmAlertActivity.class);
         alarmAlertActivityIntent.putExtra(ALARM_KEY, alarm);
         alarmAlertActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
         startActivity(alarmAlertActivityIntent);
-    }
-
-    private void hideNotification() {
-        stopForeground(true);
     }
 
     private void startAlarm() {
@@ -85,17 +96,24 @@ public class AlarmAlertService extends NonStoppingIntentService {
         endAudioAlarm();
     }
 
+    /**
+     * ShowNotification will display a Notification by putting
+     * changing AlarmAlertService to run in the foreground
+     *
+     * @param alarm Alarm to be displayed in notification
+     */
     private void showNotification(Alarm alarm) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(getString(R.string.notification_content_title));
         builder.setContentText(alarm.getName());
         builder.setSmallIcon(R.drawable.notification_icon);
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.notification_large_icon);
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
+                R.drawable.notification_large_icon);
         builder.setLargeIcon(largeIcon);
         Intent intent = new Intent(getApplicationContext(), AlarmAlertService.class);
         intent.setAction(STOP_ALARM);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
-        builder.addAction(R.drawable.notification_icon, "Dismiss", pendingIntent);
+        builder.addAction(R.drawable.icon_flat, "Dismiss", pendingIntent);
         builder.setContentIntent(pendingIntent);
         Notification notification = builder.build();
         this.startForeground(2, notification);
@@ -141,6 +159,9 @@ public class AlarmAlertService extends NonStoppingIntentService {
         audioRunning = true;
     }
 
+    /**
+     * Stop playing audio
+     */
     private void endAudioAlarm() {
         if (audioRunning) {
             audioRunning = false;
@@ -149,7 +170,9 @@ public class AlarmAlertService extends NonStoppingIntentService {
                 mediaPlayer.release();
                 mediaPlayer = null;
                 //restore audio volume
-                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, systemAlarmVolumeSetting, 0);
+                audioManager.setStreamVolume(
+                        AudioManager.STREAM_ALARM,
+                        systemAlarmVolumeSetting, 0);
                 audioManager.abandonAudioFocus(null);
                 audioManager = null;
             }
@@ -164,6 +187,15 @@ public class AlarmAlertService extends NonStoppingIntentService {
     private void endVibration() {
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.cancel();
+    }
+
+    private void broadcastActivityClose() {
+        sendBroadcast(new Intent(AlarmAlertActivity.CLOSE_ACTIVITY),
+                Manifest.permission.PRIVATE);
+    }
+
+    private void hideNotification() {
+        stopForeground(true);
     }
 
 }
