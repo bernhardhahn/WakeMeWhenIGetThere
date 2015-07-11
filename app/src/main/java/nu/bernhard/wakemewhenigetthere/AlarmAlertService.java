@@ -120,6 +120,7 @@ public class AlarmAlertService extends NonStoppingIntentService {
     }
 
     private void startAudioAlarm() {
+        if (audioRunning) return;
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         // save current volume
         systemAlarmVolumeSetting = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
