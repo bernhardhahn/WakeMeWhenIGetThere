@@ -19,7 +19,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 
-public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdateListener, AlarmsAdapter.AlarmStateObserver {
+public class MainActivityFragment extends Fragment
+        implements Alarms.AlarmsUpdateListener, AlarmsAdapter.AlarmStateObserver {
 
     private static final String TAG = MainActivityFragment.class.getName();
     public static final int ALARM_ACTIVITY_REQUEST_CODE = 123;
@@ -28,7 +29,15 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
     private AlarmsAdapter alarmsAdapter;
 
     private AlarmService alarmService;
+
+    /**
+     * Indicate of binding to AlarmService is active
+     */
     private boolean serviceBound;
+
+    /**
+     * ServiceConnection to AlarmService
+     */
     private final ServiceConnection alarmServiceConnection = new ServiceConnection() {
 
         @Override
@@ -49,22 +58,10 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
         }
     };
 
-    private void getAlarmsFromService() {
-        if ( serviceBound ) {
-            final Alarms alarms = alarmService.getAlarms();
-            alarmsAdapter = new AlarmsAdapter(getActivity(), alarms);
-            alarmsAdapter.registerAlarmStateObserver(this);
-            alarmsListView.setAdapter(alarmsAdapter);
-        } else {
-            Log.d(TAG, "alarms service not bound: can't create AlarmAdapter");
-        }
-    }
-
     @Override
     public void onStart() {
         super.onStart();
-        Intent intent = new Intent(getActivity(), AlarmService.class);
-        getActivity().bindService(intent, alarmServiceConnection, Context.BIND_ADJUST_WITH_ACTIVITY);
+        bindToAlarmService();
     }
 
     @Override
@@ -73,44 +70,16 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
         alarmService.getAlarms().removeAlarmsUpdateListener(this);
         alarmsAdapter.unregisterAlarmStateObserver(this);
         getActivity().unbindService(alarmServiceConnection);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        alarmsListView = (ListView) view.findViewById(R.id.alarmsListView);
-        FloatingActionButton newAlarm = (FloatingActionButton) view.findViewById(R.id.newAlarmFab);
-        newAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent newAlarmIntent = new Intent(getActivity(), AlarmActivity.class);
-                startActivityForResult(newAlarmIntent, ALARM_ACTIVITY_REQUEST_CODE);
-            }
-        });
-
-        alarmsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Alarm alarm = (Alarm) adapterView.getItemAtPosition(i);
-                Intent showAlarmIntent = new Intent(getActivity(), AlarmActivity.class);
-                showAlarmIntent.putExtra(AlarmActivity.ALARM_KEY, alarm);
-                startActivityForResult(showAlarmIntent, ALARM_ACTIVITY_REQUEST_CODE);
-            }
-        });
-        alarmsListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu contextMenu, View view,
-                                            ContextMenu.ContextMenuInfo contextMenuInfo) {
-                getActivity().getMenuInflater().inflate(
-                        R.menu.alarm_list_item_context_menu, contextMenu);
-            }
-        });
-        alarmsListView.setEmptyView(view.findViewById(R.id.empty));
+        setNewAlarmButtonAction(view);
+        setupAlarmsListView(view);
         return view;
     }
-
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info =
@@ -142,8 +111,67 @@ public class MainActivityFragment extends Fragment implements Alarms.AlarmsUpdat
         Log.d(TAG, "Alarms updated");
     }
 
+    /**
+     * AlarmStateChanges are triggered when the user
+     * toggles the Alarm's active state in the main
+     * ListView
+     *
+     * @param alarm Alarm which has been toggles
+     * @param index Index of the Alarm in AlarmsAdapter
+     */
     @Override
     public void onAlarmStateChange(Alarm alarm, int index) {
         alarmService.getAlarms().update(alarm);
+    }
+
+    private void bindToAlarmService() {
+        Intent intent = new Intent(getActivity(), AlarmService.class);
+        getActivity().bindService(intent, alarmServiceConnection, Context.BIND_ADJUST_WITH_ACTIVITY);
+    }
+
+
+    private void setupAlarmsListView(View view) {
+        alarmsListView = (ListView) view.findViewById(R.id.alarmsListView);
+        alarmsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Alarm alarm = (Alarm) adapterView.getItemAtPosition(i);
+                Intent showAlarmIntent = new Intent(getActivity(), AlarmActivity.class);
+                showAlarmIntent.putExtra(AlarmActivity.ALARM_KEY, alarm);
+                startActivityForResult(showAlarmIntent, ALARM_ACTIVITY_REQUEST_CODE);
+            }
+        });
+        //Add context menu to alarmListView
+        alarmsListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu contextMenu, View view,
+                                            ContextMenu.ContextMenuInfo contextMenuInfo) {
+                getActivity().getMenuInflater().inflate(
+                        R.menu.alarm_list_item_context_menu, contextMenu);
+            }
+        });
+        alarmsListView.setEmptyView(view.findViewById(R.id.empty));
+    }
+
+    private void setNewAlarmButtonAction(View view) {
+        FloatingActionButton newAlarmButton = (FloatingActionButton) view.findViewById(R.id.newAlarmFab);
+        newAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent newAlarmIntent = new Intent(getActivity(), AlarmActivity.class);
+                startActivityForResult(newAlarmIntent, ALARM_ACTIVITY_REQUEST_CODE);
+            }
+        });
+    }
+
+    private void getAlarmsFromService() {
+        if ( serviceBound ) {
+            final Alarms alarms = alarmService.getAlarms();
+            alarmsAdapter = new AlarmsAdapter(getActivity(), alarms);
+            alarmsAdapter.registerAlarmStateObserver(this);
+            alarmsListView.setAdapter(alarmsAdapter);
+        } else {
+            Log.d(TAG, "alarms service not bound: can't create AlarmAdapter");
+        }
     }
 }
