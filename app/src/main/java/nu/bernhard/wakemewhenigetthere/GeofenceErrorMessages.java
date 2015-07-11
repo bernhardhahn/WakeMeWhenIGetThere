@@ -23,6 +23,8 @@ import com.google.android.gms.location.GeofenceStatusCodes;
 
 /**
  * Geofence error codes mapped to error messages.
+ *
+ * !!this class is borrowed from google geofence example app!!
  */
 public class GeofenceErrorMessages {
     private GeofenceErrorMessages() {}
