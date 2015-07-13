@@ -79,8 +79,9 @@ public class AlarmActivity extends VisibleActivity
         setupAlarmRadiusSeekBar();
         setupMapView(savedInstanceState);
         setCallbackForSaveButton();
-
         populateViewsFromAlarm();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
