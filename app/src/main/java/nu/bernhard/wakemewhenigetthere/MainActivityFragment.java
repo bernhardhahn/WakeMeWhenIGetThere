@@ -137,7 +137,10 @@ public class MainActivityFragment extends Fragment
         alarmsListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
-
+                actionMode.setTitle(getActivity().getResources().
+                        getQuantityString(R.plurals.alarms_selected_count,
+                                alarmsListView.getCheckedItemCount(),
+                                alarmsListView.getCheckedItemCount()));
             }
 
             @Override

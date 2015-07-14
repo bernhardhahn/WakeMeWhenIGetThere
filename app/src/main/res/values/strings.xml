@@ -21,4 +21,10 @@
     <string name="radius_title">Radius %1$d %2$s</string>
     <string name="active_input_title">Active</string>
     <string name="alarm_name_placeholder">set an alarm name</string>
+
+    <plurals
+        name="alarms_selected_count">
+        <item quantity="one">%d Alarm Selected</item>
+        <item quantity="other">%d Alarms Selected</item>
+    </plurals>
 </resources>
