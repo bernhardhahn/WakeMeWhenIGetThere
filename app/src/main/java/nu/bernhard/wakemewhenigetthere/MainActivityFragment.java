@@ -10,11 +10,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -80,19 +83,6 @@ public class MainActivityFragment extends Fragment
         setupAlarmsListView(view);
         return view;
     }
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info =
-                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int position = info.position;
-        if (item.getItemId() == R.id.deleteAlarm) {
-            Alarm alarm = (Alarm) alarmsAdapter.getItem(position);
-            alarmService.getAlarms().removeById(alarm.getId());
-            alarmsAdapter.notifyDataSetChanged();
-        }
-
-        return super.onContextItemSelected(item);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -141,16 +131,49 @@ public class MainActivityFragment extends Fragment
                 startActivityForResult(showAlarmIntent, ALARM_ACTIVITY_REQUEST_CODE);
             }
         });
-        //Add context menu to alarmListView
-        alarmsListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+
+        alarmsListView.setEmptyView(view.findViewById(R.id.empty));
+        alarmsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        alarmsListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
-            public void onCreateContextMenu(ContextMenu contextMenu, View view,
-                                            ContextMenu.ContextMenuInfo contextMenuInfo) {
-                getActivity().getMenuInflater().inflate(
-                        R.menu.alarm_list_item_context_menu, contextMenu);
+            public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
+
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                MenuInflater inflater = actionMode.getMenuInflater();
+                inflater.inflate(R.menu.alarm_list_item_context_menu, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.deleteAlarm) {
+                    for (int i = alarmsAdapter.getCount() - 1; i >= 0; i--) {
+                        if (alarmsListView.isItemChecked(i)) {
+                            Alarm alarm = (Alarm) alarmsAdapter.getItem(i);
+                            alarmService.getAlarms().removeById(alarm.getId());
+                        }
+                    }
+                    actionMode.finish();
+                    alarmsAdapter.notifyDataSetChanged();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+
             }
         });
-        alarmsListView.setEmptyView(view.findViewById(R.id.empty));
+
     }
 
     private void setNewAlarmButtonAction(View view) {
@@ -174,4 +197,5 @@ public class MainActivityFragment extends Fragment
             Log.d(TAG, "alarms service not bound: can't create AlarmAdapter");
         }
     }
+
 }

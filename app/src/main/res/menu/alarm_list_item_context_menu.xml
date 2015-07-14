@@ -2,5 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/deleteAlarm"
+        android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/delete_alarm_menu_title" />
 </menu>
